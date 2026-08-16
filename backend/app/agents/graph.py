@@ -1,5 +1,5 @@
 """
-Pulse — Main LangGraph Orchestration (§7.2)
+Pulse: Main LangGraph Orchestration (§7.2)
 Persona-named nodes: Scout, Strategist, Copywriter, Guardrail, Sentinel.
 Same execution model as a functional pipeline, persona naming for demo narrative.
 """
@@ -114,7 +114,7 @@ class PulseGraph:
         recommendation = strategist.get_recommendation(platform=platform)
         trace.append({
             "node_name": "Strategist",
-            "persona": "📊 Strategist Agent",
+            "persona": "Strategist Agent",
             "status": "completed",
             "duration_ms": int((datetime.utcnow() - strategist_start).total_seconds() * 1000),
             "input_summary": f"Analyzing engagement patterns for {platform}",
@@ -221,7 +221,7 @@ class PulseGraph:
                 **triage,
             }
             
-            # Generate auto-reply if eligible
+            # Generate auto reply if eligible
             if triage["triage_action"] == "auto_reply":
                 reply = await sentinel.generate_auto_reply(
                     comment_text=comment.get("content", comment.get("text", "")),

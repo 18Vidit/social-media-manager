@@ -26,7 +26,7 @@ export default function Home() {
   const [brandId, setBrandId] = useState<string>("demo-brand-001");
 
   const addToast = useCallback((type: Toast["type"], message: string) => {
-    const id = Date.now().toString();
+    const id = `${Date.now()}-${Math.random().toString(36).substr(2,5)}`; // ensure uniqueness
     setToasts(prev => [...prev, { id, type, message }]);
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id));

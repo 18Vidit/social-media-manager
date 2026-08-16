@@ -3,7 +3,9 @@ Pulse — Database Engine & Session Management
 Async SQLAlchemy with pgvector support.
 """
 
+# pyrefly: ignore [missing-import]
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import DeclarativeBase
 from app.config import settings
 

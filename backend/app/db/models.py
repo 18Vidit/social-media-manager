@@ -8,11 +8,14 @@ import uuid
 from datetime import datetime, date
 from typing import Optional, List
 
+# pyrefly: ignore [missing-import]
 from sqlalchemy import (
     String, Text, Float, Integer, Boolean, DateTime, Date,
     ForeignKey, JSON, Enum as SQLEnum, Index
 )
+# pyrefly: ignore [missing-import]
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+# pyrefly: ignore [missing-import]
 from pgvector.sqlalchemy import Vector
 import enum
 
@@ -20,9 +23,7 @@ from app.db.database import Base
 from app.config import settings
 
 
-# ──────────────────────────────────────────────
 # Enums
-# ──────────────────────────────────────────────
 
 class Platform(str, enum.Enum):
     INSTAGRAM = "instagram"
@@ -61,9 +62,7 @@ class TriageAction(str, enum.Enum):
     ESCALATE_IMMEDIATE = "escalate_immediate"
 
 
-# ──────────────────────────────────────────────
 # Brand & Voice Memory (§7.4)
-# ──────────────────────────────────────────────
 
 class Brand(Base):
     __tablename__ = "brands"
@@ -120,9 +119,7 @@ class BrandGuideline(Base):
     brand: Mapped["Brand"] = relationship(back_populates="guidelines")
 
 
-# ──────────────────────────────────────────────
 # Content (§7.5)
-# ──────────────────────────────────────────────
 
 class Post(Base):
     """Past posts used for few-shot retrieval and voice centroid computation."""
@@ -228,9 +225,7 @@ class ScheduledPost(Base):
     draft: Mapped["GeneratedDraft"] = relationship()
 
 
-# ──────────────────────────────────────────────
 # Comments & Triage (§7.8)
-# ──────────────────────────────────────────────
 
 class Comment(Base):
     """Ingested comments/DMs with classification and triage routing."""
@@ -296,9 +291,7 @@ class AutoReply(Base):
     comment: Mapped["Comment"] = relationship(back_populates="auto_replies")
 
 
-# ──────────────────────────────────────────────
 # Analytics & Engagement (§5.3, §7.6)
-# ──────────────────────────────────────────────
 
 class EngagementMetric(Base):
     """Time-series engagement data per post, used for EQI and peak-time prediction."""

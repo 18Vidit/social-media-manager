@@ -81,9 +81,7 @@ async def get_upcoming_posts(brand_id: Optional[str] = None, db: AsyncSession = 
     return response
 
 
-# ──────────────────────────────────────────────
 # Comments Router
-# ──────────────────────────────────────────────
 
 comments_router = APIRouter(prefix="/api/comments", tags=["comments"])
 
@@ -184,9 +182,7 @@ async def check_circuit_breaker(brand_id: Optional[str] = None, db: AsyncSession
     return sentinel.check_circuit_breaker(sentiments)
 
 
-# ──────────────────────────────────────────────
 # Analytics Router
-# ──────────────────────────────────────────────
 
 analytics_router = APIRouter(prefix="/api/analytics", tags=["analytics"])
 
@@ -327,9 +323,7 @@ async def get_engagement_heatmap():
     }
 
 
-# ──────────────────────────────────────────────
 # Trends Router
-# ──────────────────────────────────────────────
 
 trends_router = APIRouter(prefix="/api/trends", tags=["trends"])
 

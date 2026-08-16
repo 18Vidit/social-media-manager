@@ -8,14 +8,14 @@ interface SidebarProps {
   backendStatus: "connecting" | "connected" | "offline";
 }
 
-const navItems: { id: PageId; icon: string; label: string; badge?: number }[] = [
-  { id: "dashboard", icon: "📊", label: "Dashboard" },
-  { id: "content", icon: "✍️", label: "Content Studio" },
-  { id: "schedule", icon: "📅", label: "Schedule" },
-  { id: "comments", icon: "💬", label: "Comment Triage", badge: 3 },
-  { id: "analytics", icon: "📈", label: "Analytics" },
-  { id: "brand", icon: "🎨", label: "Brand Voice" },
-  { id: "pipeline", icon: "🔗", label: "Pipeline Trace" },
+const navItems: { id: PageId; label: string; badge?: number }[] = [
+  { id: "dashboard", label: "Dashboard" },
+  { id: "content", label: "Content Studio" },
+  { id: "schedule", label: "Schedule" },
+  { id: "comments", label: "Comment Triage", badge: 3 },
+  { id: "analytics", label: "Analytics" },
+  { id: "brand", label: "Brand Voice" },
+  { id: "pipeline", label: "Pipeline Trace" },
 ];
 
 const agents = [
@@ -31,9 +31,8 @@ export default function Sidebar({ activePage, onNavigate, backendStatus }: Sideb
     <aside className="sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-icon">P</div>
         <div>
-          <div className="logo-text">PULSE</div>
+          <div className="logo-text">Pulse</div>
           <div className="logo-tag">AI Social Manager</div>
         </div>
       </div>
@@ -47,7 +46,6 @@ export default function Sidebar({ activePage, onNavigate, backendStatus }: Sideb
             className={`nav-item ${activePage === item.id ? "active" : ""}`}
             onClick={() => onNavigate(item.id)}
           >
-            <span className="nav-icon">{item.icon}</span>
             <span>{item.label}</span>
             {item.badge && <span className="nav-badge">{item.badge}</span>}
           </a>

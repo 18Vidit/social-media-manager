@@ -1,5 +1,5 @@
 """
-Pulse — Sentinel Agent (Comment Triage §7.8 + Sentiment Circuit Breaker §6.9)
+Pulse: Sentinel Agent (Comment Triage §7.8 + Sentiment Circuit Breaker §6.9)
 2×2 risk matrix routing populated by dedicated classifiers.
 """
 

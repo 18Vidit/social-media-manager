@@ -1,10 +1,9 @@
-# Pulse — Agentic AI Social Media Manager
+# Pulse: Agentic AI Social Media Manager
 
-> An AI-powered social media manager that protects the creator, not just the metric.
+> An AI powered social media manager that protects the creator, not just the metric.
 
-**Team Synthesis** · NSUT Hackathon · August 2026
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Start database
@@ -32,11 +31,11 @@ Open http://localhost:3000 to see the dashboard.
 
 | Agent | Role | Key Feature |
 |-------|------|-------------|
-| 🔍 Scout | Trend Radar | Relevance-filtered trending topics |
-| 📊 Strategist | Peak-Time | LinUCB bandit with EQI reward |
-| ✍️ Copywriter | Content Gen | Hook-then-caption split |
-| 🛡️ Guardrail | Quality Gate | Voice-drift + slop rubric dual check |
-| 👁️ Sentinel | Comment Triage | 2×2 risk matrix routing |
+|  Scout | Trend Radar | Relevance-filtered trending topics |
+|  Strategist | Peak-Time | LinUCB bandit with EQI reward |
+|  Copywriter | Content Gen | Hook-then-caption split |
+|  Guardrail | Quality Gate | Voice-drift + slop rubric dual check |
+|  Sentinel | Comment Triage | 2×2 risk matrix routing |
 
 ## 📂 Structure
 

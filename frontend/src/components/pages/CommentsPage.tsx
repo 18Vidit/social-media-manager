@@ -36,33 +36,33 @@ export default function CommentsPage({ brandId, addToast, backendStatus }: Props
     {
       key: "high_conf_low_risk",
       title: "Auto-Reply Eligible",
-      icon: "✅",
+      icon: "",
       cssClass: "auto-reply",
-      description: "High confidence, low risk — FAQ & simple questions",
+      description: "High confidence, low risk - FAQ & simple questions",
       items: triage?.high_conf_low_risk || [],
     },
     {
       key: "high_conf_high_risk",
       title: "Human Review",
-      icon: "👤",
+      icon: "",
       cssClass: "human-review",
-      description: "High confidence, high risk — collabs, press, verified accounts",
+      description: "High confidence, high risk - collabs, press, verified accounts",
       items: triage?.high_conf_high_risk || [],
     },
     {
       key: "low_conf_low_risk",
       title: "Log Only",
-      icon: "📝",
+      icon: "",
       cssClass: "log-only",
-      description: "Low confidence, low risk — generic engagement",
+      description: "Your audience's peak engagement window - Saturday evenings see 90% of peak engagement.",
       items: triage?.low_conf_low_risk || [],
     },
     {
       key: "low_conf_high_risk",
       title: "Escalate Immediately",
-      icon: "🚨",
+      icon: "",
       cssClass: "escalate",
-      description: "Low confidence, high risk — possible PR issue",
+      description: "Low confidence, high risk - possible PR issue",
       items: triage?.low_conf_high_risk || [],
     },
   ];
@@ -71,27 +71,27 @@ export default function CommentsPage({ brandId, addToast, backendStatus }: Props
     <div>
       <div className="page-header">
         <div>
-          <h1>💬 Comment Triage</h1>
-          <p className="page-subtitle">2×2 Risk Matrix — Sentinel Agent classifies by intent confidence × brand risk.</p>
+          <h1>Comment Triage</h1>
+          <p className="page-subtitle">2×2 Risk Matrix - Sentinel Agent classifies by intent confidence × brand risk.</p>
         </div>
         <button className="btn btn-secondary btn-sm" onClick={loadTriage}>↻ Re-scan</button>
       </div>
 
       {/* Circuit Breaker Banner */}
       {circuitBreaker && (
-        <div className="card animate-in" style={{
+        <div className="card glass animate-in" style={{
           marginBottom: 24,
           borderColor: circuitBreaker.triggered ? "rgba(255, 59, 92, 0.5)" : "rgba(0, 245, 160, 0.3)",
           background: circuitBreaker.triggered ? "rgba(255, 59, 92, 0.05)" : "var(--bg-card)",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ fontSize: "1.5rem" }}>{circuitBreaker.triggered ? "🚨" : "✅"}</div>
+            <div style={{ fontSize: "1.5rem" }}>{circuitBreaker.triggered ? "Alert" : "OK"}</div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, marginBottom: 2 }}>
                 Sentiment Circuit Breaker: {circuitBreaker.triggered ? "TRIGGERED" : "Normal"}
               </div>
               <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
-                Negative ratio: {(circuitBreaker.negative_ratio * 100).toFixed(0)}% •
+                Negative ratio: {circuitBreaker.negative_ratio} •
                 Avg sentiment: {circuitBreaker.avg_sentiment?.toFixed(2)} •
                 Powered by cardiffnlp/twitter-roberta-base-sentiment-latest
               </div>
@@ -151,7 +151,7 @@ export default function CommentsPage({ brandId, addToast, backendStatus }: Props
                         fontSize: "0.75rem",
                         color: "var(--text-secondary)",
                       }}>
-                        {comment.auto_reply ? "🤖 Auto-reply: " : "📝 Drafted reply: "}
+                        {comment.auto_reply ? "Auto-reply: " : "Drafted reply: "}
                         {comment.auto_reply || comment.drafted_reply}
                       </div>
                     )}
@@ -169,18 +169,18 @@ export default function CommentsPage({ brandId, addToast, backendStatus }: Props
 function getMockTriage() {
   return {
     high_conf_low_risk: [
-      { content: "What time do you usually post your workouts?", author_username: "fitness_fan_22", sentiment_label: "neutral", sentiment_score: 0.1, intent: "faq", intent_confidence: 0.85, auto_reply: "Great question! 🙌 Check out our highlights for more details on that." },
+      { content: "What time do you usually post your workouts?", author_username: "fitness_fan_22", sentiment_label: "neutral", sentiment_score: 0.1, intent: "faq", intent_confidence: 0.85, auto_reply: "Great question! Check out our highlights for more details on that.", },
       { content: "Do you have a beginner version of this routine?", author_username: "newbie.starts", sentiment_label: "neutral", sentiment_score: 0.2, intent: "faq", intent_confidence: 0.8, auto_reply: "Thanks for asking! We've got a guide saved in our highlights." },
       { content: "How many calories does this burn?", author_username: "track.everything", sentiment_label: "neutral", sentiment_score: 0.0, intent: "faq", intent_confidence: 0.75 },
     ],
     high_conf_high_risk: [
-      { content: "Hey! I'm from @fitgear.india — would love to discuss a collaboration. Can we DM?", author_username: "fitgear.india", is_verified: true, sentiment_label: "positive", sentiment_score: 0.5, intent: "collaboration", intent_confidence: 0.92, drafted_reply: "Thanks for reaching out! We'd love to learn more about what you have in mind." },
-      { content: "Hi, I'm a journalist at HealthToday. Would you be open to a quick interview?", author_username: "sarah.healthtoday", is_verified: true, sentiment_label: "neutral", sentiment_score: 0.3, intent: "press", intent_confidence: 0.88, drafted_reply: "Thanks for thinking of us! Happy to chat — DM us to coordinate." },
+      { content: "Hey! I'm from @fitgear.india - would love to discuss a collaboration. Can we DM?", author_username: "fitgear.india", is_verified: true, sentiment_label: "positive", sentiment_score: 0.5, intent: "collaboration", intent_confidence: 0.92, drafted_reply: "Thanks for reaching out! We'd love to learn more about what you have in mind." },
+      { content: "Hi, I'm a journalist at HealthToday. Would you be open to a quick interview?", author_username: "sarah.healthtoday", is_verified: true, sentiment_label: "neutral", sentiment_score: 0.3, intent: "press", intent_confidence: 0.88, drafted_reply: "Thanks for thinking of us! Happy to chat - DM us to coordinate." },
     ],
     low_conf_low_risk: [
-      { content: "This is exactly what I needed today 🔥🔥🔥", author_username: "daily_mover", sentiment_label: "positive", sentiment_score: 0.9, intent: "positive", intent_confidence: 0.5 },
-      { content: "Love this ❤️", author_username: "quick.liker", sentiment_label: "positive", sentiment_score: 0.8, intent: "positive", intent_confidence: 0.4 },
-      { content: "👍", author_username: "thumbs.upper", sentiment_label: "neutral", sentiment_score: 0.3, intent: "neutral", intent_confidence: 0.3 },
+      { content: "This is exactly what I needed today", author_username: "daily_mover", sentiment_label: "positive", sentiment_score: 0.9, intent: "positive", intent_confidence: 0.5 },
+      { content: "Love this", author_username: "quick.liker", sentiment_label: "positive", sentiment_score: 0.8, intent: "positive", intent_confidence: 0.4 },
+      { content: "", author_username: "thumbs.upper", sentiment_label: "neutral", sentiment_score: 0.3, intent: "neutral", intent_confidence: 0.3 },
     ],
     low_conf_high_risk: [
       { content: "I tried your routine and hurt my back. Not cool posting without proper form warnings.", author_username: "injured_follower", sentiment_label: "negative", sentiment_score: -0.8, intent: "complaint", intent_confidence: 0.45 },

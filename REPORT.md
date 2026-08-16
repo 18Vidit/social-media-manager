@@ -1,4 +1,4 @@
-# 📊 Build Report — Pulse (Agentic AI Social Media Manager)
+# Build Report: Pulse (Agentic AI Social Media Manager)
 
 ## What Was Built
 
@@ -18,11 +18,11 @@ A complete hackathon-ready prototype of **Pulse** — an agentic AI social media
 
 | Agent | File | What It Does |
 |-------|------|-------------|
-| **🔍 Scout** | `agents/scout.py` | Trend radar — periodic relevance-filtered scan, surfaces top 2-3 trends matching brand content pillars |
-| **📊 Strategist** | `agents/strategist.py` | Peak-time prediction — heuristic heatmap + LinUCB contextual bandit with EQI reward signal |
-| **✍️ Copywriter** | `agents/copywriter.py` | Content generation — hook-then-caption split, 3 variants, LLM integration (Gemini/Claude/OpenAI with template fallback) |
-| **🛡️ Guardrail** | (in `services/voice_engine.py`) | Dual check — embedding-centroid voice similarity + slop rubric cliché detection |
-| **👁️ Sentinel** | `agents/sentinel.py` | Comment triage — 2×2 risk matrix routing, sentiment classification, circuit breaker |
+| ** Scout** | `agents/scout.py` | Trend radar — periodic relevance-filtered scan, surfaces top 2-3 trends matching brand content pillars |
+| ** Strategist** | `agents/strategist.py` | Peak-time prediction — heuristic heatmap + LinUCB contextual bandit with EQI reward signal |
+| ** Copywriter** | `agents/copywriter.py` | Content generation — hook-then-caption split, 3 variants, LLM integration (Gemini/Claude/OpenAI with template fallback) |
+| ** Guardrail** | (in `services/voice_engine.py`) | Dual check — embedding-centroid voice similarity + slop rubric cliché detection |
+| ** Sentinel** | `agents/sentinel.py` | Comment triage — 2×2 risk matrix routing, sentiment classification, circuit breaker |
 
 ### Key Services
 - **Voice Engine** (`services/voice_engine.py`): Brand voice analysis — embeddings, centroid computation, structural profile caching, slop rubric
@@ -62,13 +62,13 @@ A complete hackathon-ready prototype of **Pulse** — an agentic AI social media
 
 | Page | What It Shows |
 |------|--------------|
-| **📊 Dashboard** | Overview stats, engagement trends, trending topics from Scout, agent status, circuit breaker, audience snapshot |
-| **✍️ Content Studio** | Generate form → live pipeline trace → 3 variant cards with voice similarity, slop scores, hook highlighting, explainability, approve/reject |
-| **💬 Comment Triage** | 2×2 risk matrix grid, sentiment badges, auto-reply previews, circuit breaker banner |
-| **📅 Schedule** | Engagement heatmap (7×24 grid), top posting slots, LinUCB recommendation, upcoming posts |
-| **📈 Analytics** | Audience stats, city/gender distribution, EQI-ranked post performance table |
-| **🎨 Brand Voice** | Structural profile, tone radar, guidelines with temporal validity |
-| **🔗 Pipeline Trace** | Visual execution traces, architecture overview, §4 synthesis decisions |
+| **Dashboard** | Overview stats, engagement trends, trending topics from Scout, agent status, circuit breaker, audience snapshot |
+| **Content Studio** | Generate form → live pipeline trace → 3 variant cards with voice similarity, slop scores, hook highlighting, explainability, approve/reject |
+| **Comment Triage** | 2×2 risk matrix grid, sentiment badges, auto-reply previews, circuit breaker banner |
+| **Schedule** | Engagement heatmap (7×24 grid), top posting slots, LinUCB recommendation, upcoming posts |
+| **Analytics** | Audience stats, city/gender distribution, EQI-ranked post performance table |
+| **Brand Voice** | Structural profile, tone radar, guidelines with temporal validity |
+| **Pipeline Trace** | Visual execution traces, architecture overview, §4 synthesis decisions |
 
 ### Design System
 - **Premium dark mode** with cyan/teal accents matching the PPT aesthetic
@@ -83,23 +83,23 @@ A complete hackathon-ready prototype of **Pulse** — an agentic AI social media
 
 | Feature | Status | Notes |
 |---------|--------|-------|
-| LangGraph pipeline | ✅ Built | Persona-named nodes, pipeline trace |
-| Brand voice ingestion | ✅ Built | 20 sample posts, voice centroid + structural profile |
-| Hook → Caption split | ✅ Built | Separate hook generator + caption generator |
-| Widened guardrail | ✅ Built | Voice-drift (embedding) + slop rubric (cliché) |
-| Human approval gate | ✅ Built | Approve/reject in Content Studio |
-| Heuristic peak-time | ✅ Built | Engagement heatmap from brand's own data |
-| Auto-reply (risk matrix) | ✅ Built | 2×2 grid with classification |
-| Sentiment circuit breaker | ✅ Built | cardiffnlp model reference, rule-based fallback |
-| Explainability panel | ✅ Built | Pipeline Trace page + per-variant "why" annotations |
+| LangGraph pipeline |  Built | Persona-named nodes, pipeline trace |
+| Brand voice ingestion | Built | 20 sample posts, voice centroid + structural profile |
+| Hook → Caption split | Built | Separate hook generator + caption generator |
+| Widened guardrail | Built | Voice-drift (embedding) + slop rubric (cliché) |
+| Human approval gate | Built | Approve/reject in Content Studio |
+| Heuristic peak-time | Built | Engagement heatmap from brand's own data |
+| Auto-reply (risk matrix) | Built | 2×2 grid with classification |
+| Sentiment circuit breaker | Built | cardiffnlp model reference, rule-based fallback |
+| Explainability panel | Built | Pipeline Trace page + per-variant "why" annotations |
 
 ### Tier 2 (demo-ready but not fully wired)
 | Feature | Status |
 |---------|--------|
-| LinUCB bandit | ✅ Built + seeded | Scaffolded with synthetic data |
-| EQI scoring | ✅ Built | Platform-specific weights |
-| Trend radar | ✅ Built | Relevance-filtered scan |
-| Voice-drift rejection loop (visual) | ✅ Built | Visible in pipeline trace |
+| LinUCB bandit | Built + seeded | Scaffolded with synthetic data |
+| EQI scoring | Built | Platform-specific weights |
+| Trend radar | Built | Relevance-filtered scan |
+| Voice-drift rejection loop (visual) | Built | Visible in pipeline trace |
 
 ---
 

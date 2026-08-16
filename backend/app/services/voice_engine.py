@@ -6,9 +6,11 @@ voice similarity scoring, and slop rubric checking.
 
 import re
 import math
-import numpy as np
 from typing import List, Optional, Tuple
 from app.config import settings
+
+# pyright: ignore [import-untyped]
+import numpy as np
 
 
 # ──────────────────────────────────────────────
@@ -32,6 +34,7 @@ class VoiceEngine:
         """Lazy-load sentence transformer model."""
         if cls._embedder is None:
             try:
+                # pyright: ignore [reportMissingImports]
                 from sentence_transformers import SentenceTransformer
                 cls._embedder = SentenceTransformer(settings.embedding_model)
             except Exception:

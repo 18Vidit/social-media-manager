@@ -1,5 +1,5 @@
 """
-Pulse — Copywriter Agent (Content Generation Subgraph §7.5)
+Pulse: Copywriter Agent (Content Generation Subgraph §7.5)
 Implements the hook-then-caption split from Draft C:
 1. Brand voice retrieval (top-k similar, top-quartile by engagement)
 2. Hook generator (cheap model, conditioned on top-quartile hooks)
@@ -40,7 +40,7 @@ class GeneratedVariant(TypedDict):
     pipeline_trace: dict
 
 
-# Platform-specific formatting rules
+# Platform specific formatting rules
 PLATFORM_RULES = {
     "instagram": {
         "max_length": 2200,
@@ -114,6 +114,7 @@ class CopywriterAgent:
         """
         # Try LLM-based generation first
         try:
+            # pyrefly: ignore [missing-import]
             from langchain_google_genai import ChatGoogleGenerativeAI
             from app.config import settings as app_settings
             
@@ -127,7 +128,7 @@ class CopywriterAgent:
                 hook_examples = "\n".join([f"- {h}" for h in top_quartile_hooks[:5]])
                 platform_rules = PLATFORM_RULES.get(platform, PLATFORM_RULES["instagram"])
                 
-                prompt = f"""You are a social media hook generator. Generate 3 unique, attention-grabbing opening hooks for a {platform} post about: "{topic}"
+                prompt = f"""You are a social media hook generator. Generate 3 unique, attention grabbing opening hooks for a {platform} post about: "{topic}"
 
 Study these hooks from the brand's top-performing posts and match their style, energy, and structure:
 {hook_examples}
@@ -161,6 +162,7 @@ Example: ["Hook 1 text", "Hook 2 text", "Hook 3 text"]"""
         
         # Try Anthropic
         try:
+            # pyrefly: ignore [missing-import]
             from langchain_anthropic import ChatAnthropic
             from app.config import settings as app_settings
             
@@ -251,6 +253,7 @@ Return ONLY a JSON array of 3 hook strings, no other text."""
             
             # Try Google Gemini first (most accessible)
             if app_settings.google_api_key:
+                # pyrefly: ignore [missing-import]
                 from langchain_google_genai import ChatGoogleGenerativeAI
                 llm = ChatGoogleGenerativeAI(
                     model="gemini-2.5-flash",
@@ -258,6 +261,7 @@ Return ONLY a JSON array of 3 hook strings, no other text."""
                     temperature=0.7,
                 )
             elif app_settings.anthropic_api_key:
+                # pyrefly: ignore [missing-import]
                 from langchain_anthropic import ChatAnthropic
                 llm = ChatAnthropic(
                     model="claude-sonnet-4-20250514",
@@ -266,6 +270,7 @@ Return ONLY a JSON array of 3 hook strings, no other text."""
                     max_tokens=1500,
                 )
             elif app_settings.openai_api_key:
+                # pyrefly: ignore [missing-import]
                 from langchain_openai import ChatOpenAI
                 llm = ChatOpenAI(
                     model="gpt-4o",
@@ -379,7 +384,7 @@ No markdown, no explanation, just the JSON object."""
             f"2. Consistency beats intensity\n"
             f"3. Start with just 10 minutes\n\n"
             f"The biggest mistake? Overcomplicating it. Keep it simple, show up daily, and results follow {selected_emojis[0] if selected_emojis else ''}\n\n"
-            f"What's your experience with {topic}? Drop it below 👇",
+            f"What's your experience with {topic}? Drop it below ",
             
             f"\n\nI used to overcomplicate {topic}. Then I simplified everything down to what actually matters:\n\n"
             f"→ Focus on one thing at a time\n→ Track what works, drop what doesn't\n→ Give it at least 2 weeks before judging\n\n"

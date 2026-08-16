@@ -1,5 +1,5 @@
 """
-Pulse — Strategist Agent (Peak-Time Prediction §7.6)
+Pulse: Strategist Agent (Peak-Time Prediction §7.6)
 Heuristic historical heatmap + LinUCB bandit scaffolding with EQI reward.
 """
 

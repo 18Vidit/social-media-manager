@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Fragment } from "react";
 import { api } from "@/lib/api";
 
 interface Props {
@@ -51,14 +51,14 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
     <div>
       <div className="page-header">
         <div>
-          <h1>📅 Schedule</h1>
-          <p className="page-subtitle">Strategist Agent — peak-time prediction from your audience&apos;s own engagement patterns.</p>
+          <h1>Schedule</h1>
+          <p className="page-subtitle">Strategist Agent - peak-time prediction from your audience's own engagement patterns.</p>
         </div>
         <button className="btn btn-secondary btn-sm" onClick={loadData}>↻ Refresh</button>
       </div>
 
       {/* Best Time Recommendation */}
-      <div className="card animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
+      <div className="card glass animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{
             width: 64, height: 64, borderRadius: "var(--radius-lg)",
@@ -84,9 +84,9 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
 
       <div className="grid-2-1">
         {/* Heatmap */}
-        <div className="card animate-in">
+        <div className="card glass animate-in">
           <div className="card-header">
-            <h3 className="card-title">📊 Engagement Heatmap</h3>
+            <h3 className="card-title">Engagement Heatmap</h3>
             <span className="badge badge-info">7 × 24 grid</span>
           </div>
           <div style={{ overflowX: "auto" }}>
@@ -101,8 +101,8 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
               
               {/* Day rows */}
               {DAYS.map((day, dayIdx) => (
-                <>
-                  <div key={`label-${dayIdx}`} className="heatmap-label">{day}</div>
+                <Fragment key={dayIdx}>
+                  <div className="heatmap-label">{day}</div>
                   {Array.from({ length: 24 }, (_, hour) => {
                     const cell = heatmapData.find((c: any) => c.day_of_week === dayIdx && c.hour_of_day === hour);
                     const score = cell?.engagement_score || Math.random() * 0.5 + 0.2;
@@ -115,7 +115,7 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
                       />
                     );
                   })}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>
@@ -133,9 +133,9 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
         </div>
 
         {/* Top Slots */}
-        <div className="card animate-in">
+        <div className="card glass animate-in">
           <div className="card-header">
-            <h3 className="card-title">🏆 Top Posting Slots</h3>
+            <h3 className="card-title">Top Posting Slots</h3>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {(topSlots.length > 0 ? topSlots : getMockTopSlots()).map((slot: any, i: number) => (
@@ -172,9 +172,9 @@ export default function SchedulePage({ brandId, addToast, backendStatus }: Props
       </div>
 
       {/* Upcoming Posts */}
-      <div className="card animate-in" style={{ marginTop: 24 }}>
+      <div className="card glass animate-in" style={{ marginTop: 24 }}>
         <div className="card-header">
-          <h3 className="card-title">📋 Upcoming Scheduled Posts</h3>
+          <h3 className="card-title">Upcoming Scheduled Posts</h3>
         </div>
         {upcoming.length === 0 ? (
           <div className="empty-state" style={{ padding: 24 }}>

@@ -8,9 +8,7 @@ import uuid
 import random
 from datetime import datetime, timedelta, date
 
-# ──────────────────────────────────────────────
 # Demo Brand: "FitVibe" — a fitness/wellness creator
-# ──────────────────────────────────────────────
 
 DEMO_BRAND = {
     "id": "demo-brand-001",
@@ -197,9 +195,7 @@ DEMO_POSTS = [
     },
 ]
 
-# ──────────────────────────────────────────────
 # Sample Comments (various intents for triage demo)
-# ──────────────────────────────────────────────
 
 DEMO_COMMENTS = [
     # FAQ — high confidence, low risk → auto-reply eligible

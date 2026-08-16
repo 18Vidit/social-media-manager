@@ -9,44 +9,44 @@ from typing import Optional
 
 
 class Settings(BaseSettings):
-    # ── App ──
+    # App
     app_name: str = "Pulse"
     app_env: str = "development"
     demo_mode: bool = True
     log_level: str = "info"
     cors_origins: str = "http://localhost:3000,http://localhost:3001"
 
-    # ── Database ──
+    # Database
     database_url: str = "postgresql+asyncpg://pulse:pulse_dev_2026@localhost:5432/pulse"
     redis_url: str = "redis://localhost:6379/0"
 
-    # ── LLM Keys ──
+    # LLM Keys
     anthropic_api_key: Optional[str] = None
     openai_api_key: Optional[str] = None
     google_api_key: Optional[str] = None
 
-    # ── LangSmith ──
+    # LangSmith
     langchain_tracing_v2: bool = False
     langchain_api_key: Optional[str] = None
     langchain_project: str = "pulse"
 
-    # ── Platform APIs ──
+    # Platform APIs
     meta_app_id: Optional[str] = None
     meta_app_secret: Optional[str] = None
     meta_access_token: Optional[str] = None
 
-    # ── Generation Settings ──
+    # Generation Settings
     max_variants: int = 3
     voice_similarity_threshold: float = 0.75
     slop_check_enabled: bool = True
     max_retries: int = 2
 
-    # ── Rate Limits ──
+    # Rate Limits
     auto_reply_rate_limit: int = 200  # per hour per account (Meta cap)
     sentiment_spike_threshold: float = -0.6
     sentiment_spike_window_minutes: int = 30
 
-    # ── Embedding ──
+    # Embedding
     embedding_model: str = "all-MiniLM-L6-v2"
     embedding_dimension: int = 384
 

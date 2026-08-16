@@ -1,5 +1,5 @@
 """
-Pulse — Scout Agent (Trend Radar §7.7)
+Pulse: Scout Agent (Trend Radar §7.7)
 Periodic relevance-filtered scan surfacing top trending topics.
 """
 
@@ -61,7 +61,7 @@ class ScoutAgent:
                         matching_pillar = pillar
                         break
             
-            # Volume-based bonus
+            # Volume based bonus
             volume_score = min(trend.get("volume", 0) / 5000000, 1.0) * 0.2
             relevance += volume_score
             
@@ -95,7 +95,7 @@ class ScoutAgent:
     
     @staticmethod
     def _generate_fit_explanation(trend: dict, pillar: Optional[str], relevance: float) -> str:
-        """Generate a one-line 'why this fits you' explanation per §6.4."""
+        """Generate a one line 'why this fits you' explanation per §6.4."""
         tag = trend["tag"]
         velocity = trend.get("velocity", "growing")
         volume = trend.get("volume", 0)

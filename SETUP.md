@@ -1,10 +1,10 @@
-# 🛠️ SETUP GUIDE — Pulse (Agentic AI Social Media Manager)
+# SETUP GUIDE — Pulse (Agentic AI Social Media Manager)
 
 Welcome to the team! This guide walks you through getting the project running **from zero** on your machine. Estimated time: **~15 minutes** (mostly waiting for installs).
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Prerequisites](#1-prerequisites)
 2. [Clone & Open](#2-clone--open)
@@ -44,7 +44,7 @@ docker compose version
 ```
 Download: https://www.docker.com/products/docker-desktop/
 
-> ⚠️ **Make sure Docker Desktop is actually running** (the whale icon in your menu bar / taskbar). Just installing it isn't enough.
+>  **Make sure Docker Desktop is actually running** (the whale icon in your menu bar / taskbar). Just installing it isn't enough.
 
 ### Git
 ```bash
@@ -60,7 +60,7 @@ git clone <your-github-repo-url>
 cd "social media manager"
 ```
 
-> 📁 The project root contains `backend/`, `frontend/`, `docker-compose.yml`. All commands in this guide assume you're in the project root unless stated otherwise.
+> The project root contains `backend/`, `frontend/`, `docker-compose.yml`. All commands in this guide assume you're in the project root unless stated otherwise.
 
 ---
 
@@ -94,7 +94,7 @@ OPENAI_API_KEY=your_key_here
 2. Sign in with Google → "Create API key"
 3. Copy and paste into `backend/.env`
 
-> 💡 You can leave all three blank — the app will use template-based generation and every page still works. But for a real demo, add at least one.
+> You can leave all three blank — the app will use template-based generation and every page still works. But for a real demo, add at least one.
 
 ### Step 3 — Frontend env (optional)
 
@@ -131,7 +131,7 @@ You should see `healthy` status for both services. If it shows `starting`, wait 
 docker compose down
 ```
 
-> ⚠️ The database data persists in a Docker volume (`pgdata`). To fully reset:
+> The database data persists in a Docker volume (`pgdata`). To fully reset:
 > ```bash
 > docker compose down -v   # -v removes the volume too
 > ```
@@ -178,7 +178,7 @@ Or open http://localhost:8000 in your browser — you'll see the Pulse API root 
 - http://localhost:8000/docs — Swagger UI
 - http://localhost:8000/redoc — ReDoc
 
-> 📌 Keep this terminal open. The backend needs to be running while you use the frontend.
+> Keep this terminal open. The backend needs to be running while you use the frontend.
 
 ---
 
@@ -334,10 +334,10 @@ POST /api/content/generate
 
 ## 11. Common Issues & Fixes
 
-### ❌ `docker: command not found`
+###  `docker: command not found`
 Docker isn't installed or isn't in your PATH. Re-install from https://www.docker.com/products/docker-desktop/ and restart your terminal.
 
-### ❌ `Error: connection refused` on port 5432
+###  `Error: connection refused` on port 5432
 The database container isn't running. Run:
 ```bash
 docker compose up -d
@@ -348,36 +348,36 @@ If status shows `Exited`, try:
 docker compose logs db
 ```
 
-### ❌ `ModuleNotFoundError: No module named 'fastapi'`
+###  `ModuleNotFoundError: No module named 'fastapi'`
 You're not in the virtual environment. Activate it:
 ```bash
 source backend/venv/bin/activate   # Mac/Linux
 backend\venv\Scripts\activate      # Windows
 ```
 
-### ❌ `pip install` fails on `torch` (takes forever or errors)
+###  `pip install` fails on `torch` (takes forever or errors)
 PyTorch is large (~2GB). For faster install without CUDA:
 ```bash
 pip install torch --index-url https://download.pytorch.org/whl/cpu
 pip install -r requirements.txt
 ```
 
-### ❌ Frontend shows "Backend: offline" in sidebar
+### Frontend shows "Backend: offline" in sidebar
 The backend isn't running. Start it (Step 5) and reload the page.
 
-### ❌ Content generation returns "Generation failed"
+### Content generation returns "Generation failed"
 - Check your `backend/.env` has a valid API key
 - Check the backend terminal for the actual error message
 - The app falls back to template mode — the pipeline still runs, just without real LLM calls
 
-### ❌ `Port 3000 already in use`
+### `Port 3000 already in use`
 Another process is on port 3000. Either kill it or run frontend on a different port:
 ```bash
 npm run dev -- -p 3001
 ```
 Then open http://localhost:3001.
 
-### ❌ `Port 8000 already in use`
+###  `Port 8000 already in use`
 ```bash
 uvicorn app.main:app --reload --port 8001
 ```
@@ -386,7 +386,7 @@ And update `frontend/.env.local`:
 NEXT_PUBLIC_API_URL=http://localhost:8001
 ```
 
-### ❌ Seed data gives "already seeded" on a fresh setup
+###  Seed data gives "already seeded" on a fresh setup
 The database volume persisted from a previous run. Reset it:
 ```bash
 docker compose down -v   # removes volumes
@@ -396,7 +396,7 @@ docker compose up -d     # fresh start
 
 ---
 
-## 💡 Tips for Development
+## Tips for Development
 
 - **Backend hot-reload**: The `--reload` flag restarts the server on every file save. You don't need to manually restart it.
 - **Frontend hot-reload**: Next.js `dev` mode does the same — save a file, browser refreshes.
@@ -415,4 +415,3 @@ docker compose up -d     # fresh start
 | Backend Health | http://localhost:8000/health |
 | Seed Endpoint | POST http://localhost:8000/api/seed |
 
-Happy hacking! 🚀

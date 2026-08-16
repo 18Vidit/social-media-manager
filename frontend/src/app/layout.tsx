@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pulse — Agentic AI Social Media Manager",
+  title: "pulse — Agentic AI Social Media Manager",
   description: "An AI-powered social media manager with persona-named agents: Scout, Strategist, Copywriter, Guardrail, and Sentinel. Protects the creator, not just the metric.",
 };
 

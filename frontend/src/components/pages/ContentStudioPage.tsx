@@ -61,7 +61,7 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
       setDrafts(getMockDrafts(topic, platform));
       setPipelineTrace(getMockTrace());
       setDuration(2340);
-      setRecommendedTime({ datetime: new Date().toISOString(), reason: "Saturday 8PM — your audience's peak engagement window", method: "linucb_bandit" });
+      setRecommendedTime({ datetime: new Date().toISOString(), reason: "Saturday 8PM - your audience's peak engagement window", method: "linucb_bandit" });
     }
     
     setGenerating(false);
@@ -70,7 +70,7 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
   const handleApprove = async (draftId: string) => {
     try {
       await api.approveDraft(draftId);
-      addToast("success", "Draft approved and scheduled! 🎉");
+      addToast("success", "Draft approved and scheduled!");
       setDrafts(prev => prev.map(d => d.id === draftId ? { ...d, status: "approved" } : d));
     } catch {
       addToast("info", "Draft approved (demo mode).");
@@ -79,7 +79,7 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
 
   const handleReject = async (draftId: string) => {
     try {
-      await api.rejectDraft(draftId, "Voice doesn't match — try again with more energy");
+      await api.rejectDraft(draftId, "Voice doesn't match - try again with more energy");
       addToast("info", "Draft rejected. Feedback sent to Copywriter.");
     } catch {
       addToast("info", "Draft rejected (demo mode).");
@@ -92,13 +92,13 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
     <div>
       <div className="page-header">
         <div>
-          <h1>✍️ Content Studio</h1>
-          <p className="page-subtitle">Generate on-brand content with the Copywriter Agent — hook-then-caption pipeline.</p>
+          <h1>Content Studio</h1>
+          <p className="page-subtitle">Generate on-brand content with the Copywriter Agent - hook-then-caption pipeline.</p>
         </div>
       </div>
 
       {/* Generation Form */}
-      <div className="card animate-in" style={{ marginBottom: 24 }}>
+      <div className="card glass animate-in" style={{ marginBottom: 24 }}>
         <div className="card-header">
           <h3 className="card-title">Generate New Content</h3>
           {duration > 0 && (
@@ -134,28 +134,28 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
           onClick={handleGenerate}
           disabled={generating}
         >
-          {generating ? "⏳ Generating..." : "✨ Generate 3 Variants"}
+          {generating ? "Generating..." : "Generate 3 Variants"}
         </button>
       </div>
 
       {/* Pipeline Trace */}
       {pipelineTrace.length > 0 && (
-        <div className="card animate-in" style={{ marginBottom: 24 }}>
+        <div className="card glass animate-in" style={{ marginBottom: 24 }}>
           <div className="card-header">
-            <h3 className="card-title">🔗 Pipeline Execution Trace</h3>
+            <h3 className="card-title">Pipeline Execution Trace</h3>
             <span className="badge badge-success">Explainability Panel</span>
           </div>
           <div className="pipeline-trace">
             {pipelineTrace.map((node: any, i: number) => (
               <div key={i}>
                 <div className={`trace-node ${node.status}`}>
-                  <div className="node-icon">{node.persona?.split(" ")[0] || "⚙️"}</div>
+                  <div className="node-icon">{node.persona?.split(" ")[0] || "⚙"}</div>
                   <div className="node-info">
                     <div className="node-name">{node.persona || node.node_name}</div>
                     <div className="node-detail">{node.output_summary}</div>
                   </div>
                   <div className="node-duration">
-                    {node.status === "waiting" ? "⏳ waiting" : `${node.duration_ms}ms`}
+                    {node.status === "waiting" ? "waiting" : `${node.duration_ms}ms`}
                   </div>
                 </div>
                 {i < pipelineTrace.length - 1 && <div className="trace-connector" />}
@@ -167,9 +167,9 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
 
       {/* Recommended Time */}
       {recommendedTime && (
-        <div className="card animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
+        <div className="card glass animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-            <div style={{ fontSize: "2rem" }}>📊</div>
+            <div style={{ fontSize: "2rem" }}> </div>
             <div style={{ flex: 1 }}>
               <div style={{ fontWeight: 700, marginBottom: 4 }}>
                 Strategist Recommendation
@@ -190,7 +190,7 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
             Generated Variants ({drafts.length})
           </h3>
           {drafts.map((draft, i) => (
-            <div key={draft.id || i} className={`variant-card animate-in ${i === 0 ? "recommended" : ""}`}>
+            <div key={draft.id || i} className={`variant-card glass animate-in ${i === 0 ? "recommended" : ""}`}>
               {/* Hook highlight */}
               <div style={{
                 padding: "8px 12px",
@@ -201,7 +201,7 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
                 fontSize: "0.8125rem",
                 fontWeight: 600,
               }}>
-                🎣 Hook: {draft.hook}
+                Hook: {draft.hook}
               </div>
 
               {/* Content */}
@@ -254,20 +254,20 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
                   fontSize: "0.75rem",
                   color: "var(--text-muted)",
                 }}>
-                  💡 <strong>Why this ranking:</strong> {draft.explanation.why}
+                  Why this ranking: {draft.explanation.why}
                 </div>
               )}
 
               {/* Actions */}
               <div className="variant-actions">
                 <button className="btn btn-success btn-sm" onClick={() => handleApprove(draft.id)}>
-                  ✅ Approve & Schedule
+                  Approve & Schedule
                 </button>
                 <button className="btn btn-danger btn-sm" onClick={() => handleReject(draft.id)}>
-                  ✕ Reject
+                  Reject
                 </button>
                 <button className="btn btn-secondary btn-sm">
-                  ✏️ Edit
+                  Edit
                 </button>
               </div>
             </div>
@@ -277,8 +277,8 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
 
       {/* Empty State */}
       {!generating && drafts.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-icon">✍️</div>
+        <div className="empty-state glass">
+          <div className="empty-icon"></div>
           <h3>Ready to create</h3>
           <p style={{ color: "var(--text-muted)", maxWidth: 400, margin: "8px auto" }}>
             Enter a topic above and the Copywriter agent will generate 3 on-brand variants
@@ -295,8 +295,8 @@ function getMockDrafts(topic: string, platform: string): Draft[] {
     {
       id: "mock-1",
       variant_index: 0,
-      hook: `Real talk: ${topic} isn't what most people think it is 🔥`,
-      content: `Real talk: ${topic} isn't what most people think it is 🔥\n\nHere's what nobody tells you:\n\n1. It's simpler than you think\n2. Consistency beats intensity\n3. Start with just 10 minutes\n\nThe biggest mistake? Overcomplicating it. Keep it simple, show up daily, and results follow 💪\n\nWhat's your experience? Drop it below 👇\n\n#FitVibeFlow #WellnessJourney`,
+      hook: `Real talk: ${topic} isn't what most people think it is`,
+      content: `Real talk: ${topic} isn't what most people think it is\n\nHere's what nobody tells you:\n\n1. It's simpler than you think\n2. Consistency beats intensity\n3. Start with just 10 minutes\n\nThe biggest mistake? Overcomplicating it. Keep it simple, show up daily, and results follow\n\nWhat's your experience? Drop it below\n\n#FitVibeFlow #WellnessJourney`,
       hashtags: ["#FitVibeFlow", "#WellnessJourney"],
       voice_similarity: 0.82,
       slop_score: 0.05,
@@ -308,8 +308,8 @@ function getMockDrafts(topic: string, platform: string): Draft[] {
     {
       id: "mock-2",
       variant_index: 1,
-      hook: `I tested ${topic} for 30 days. Here's what actually happened ✨`,
-      content: `I tested ${topic} for 30 days. Here's what actually happened ✨\n\nI used to overcomplicate this. Then I simplified everything down to what actually matters:\n\n→ Focus on one thing at a time\n→ Track what works, drop what doesn't\n→ Give it at least 2 weeks before judging\n\nThat's it. No fancy hacks. Just showing up 💪\n\nSave this for when you need the reminder.\n\n#FitVibeFlow #WellnessJourney #RealTalk`,
+      hook: `I tested ${topic} for 30 days. Here's what actually happened`,
+      content: `I tested ${topic} for 30 days. Here's what actually happened\n\nI used to overcomplicate this. Then I simplified everything down to what actually matters:\n\n→ Focus on one thing at a time\n→ Track what works, drop what doesn't\n→ Give it at least 2 weeks before judging\n\nThat's it. No fancy hacks. Just showing up\n\nSave this for when you need the reminder.\n\n#FitVibeFlow #WellnessJourney #RealTalk`,
       hashtags: ["#FitVibeFlow", "#WellnessJourney", "#RealTalk"],
       voice_similarity: 0.76,
       slop_score: 0.10,
@@ -321,8 +321,8 @@ function getMockDrafts(topic: string, platform: string): Draft[] {
     {
       id: "mock-3",
       variant_index: 2,
-      hook: `Your no-BS guide to ${topic} — no fluff, just what works 💪`,
-      content: `Your no-BS guide to ${topic} — no fluff, just what works 💪\n\nI've been doing this for a while and here's the truth:\n\nIt's not about being perfect. It's about being consistent enough that progress becomes inevitable.\n\nThe people who get results aren't the ones with the best plan. They're the ones who follow through on an okay plan.\n\nWhich part resonates most? Tell me honestly 👇\n\n#FitVibeFlow #WellnessJourney`,
+      hook: `Your no-BS guide to ${topic} - no fluff, just what works`,
+      content: `Your no-BS guide to ${topic} - no fluff, just what works\n\nI've been doing this for a while and here's the truth:\n\nIt's not about being perfect. It's about being consistent enough that progress becomes inevitable.\n\nThe people who get results aren't the ones with the best plan. They're the ones who follow through on an okay plan.\n\nWhich part resonates most? Tell me honestly\n\n#FitVibeFlow #WellnessJourney`,
       hashtags: ["#FitVibeFlow", "#WellnessJourney"],
       voice_similarity: 0.71,
       slop_score: 0.15,

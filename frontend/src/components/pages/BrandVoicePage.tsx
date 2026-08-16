@@ -39,13 +39,13 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
     <div>
       <div className="page-header">
         <div>
-          <h1>🎨 Brand Voice</h1>
-          <p className="page-subtitle">Your voice fingerprint — learned from 15-20 sample posts, verified on every draft.</p>
+          <h1>Brand Voice</h1>
+          <p className="page-subtitle">Your voice fingerprint - learned from 15-20 sample posts, verified on every draft.</p>
         </div>
       </div>
 
       {/* Brand Profile */}
-      <div className="card animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
+      <div className="card glass animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
           <div style={{
             width: 56, height: 56, borderRadius: "var(--radius-lg)",
@@ -69,19 +69,19 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
 
       <div className="grid-2">
         {/* Structural Profile */}
-        <div className="card animate-in">
+        <div className="card glass animate-in">
           <div className="card-header">
-            <h3 className="card-title">📐 Structural Profile</h3>
+            <h3 className="card-title">Structural Profile</h3>
             <span className="badge badge-info">Cached</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {[
-              { label: "Avg Sentence Length", value: `${profile?.avg_sentence_length?.toFixed(1) || 8.2} words`, icon: "📏" },
-              { label: "Emoji Frequency", value: `${profile?.emoji_frequency?.toFixed(1) || 2.1} per post`, icon: "😊" },
-              { label: "Emoji Placement", value: profile?.emoji_placement || "inline", icon: "📍" },
-              { label: "Hashtag Count", value: `${profile?.hashtag_count_avg?.toFixed(1) || 3.5} avg`, icon: "#️⃣" },
-              { label: "Hashtag Placement", value: profile?.hashtag_placement || "end", icon: "📌" },
-              { label: "Avg Post Length", value: `${profile?.avg_post_length?.toFixed(0) || 520} chars`, icon: "📝" },
+              { label: "Avg Sentence Length", value: `${profile?.avg_sentence_length?.toFixed(1) || 8.2} words`, icon: "" },
+              { label: "Emoji Frequency", value: `${profile?.emoji_frequency?.toFixed(1) || 2.1} per post`, icon: "" },
+              { label: "Emoji Placement", value: profile?.emoji_placement || "inline", icon: "" },
+              { label: "Hashtag Count", value: `${profile?.hashtag_count_avg?.toFixed(1) || 3.5} avg`, icon: "" },
+              { label: "Hashtag Placement", value: profile?.hashtag_placement || "end", icon: "" },
+              { label: "Avg Post Length", value: `${profile?.avg_post_length?.toFixed(0) || 520} chars`, icon: "" },
             ].map((item, i) => (
               <div key={i} style={{
                 display: "flex", justifyContent: "space-between", alignItems: "center",
@@ -100,9 +100,9 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
         </div>
 
         {/* Tone Radar */}
-        <div className="card animate-in">
+        <div className="card glass animate-in">
           <div className="card-header">
-            <h3 className="card-title">🎭 Tone Profile</h3>
+            <h3 className="card-title">Tone Profile</h3>
             <span className="badge badge-purple">Voice DNA</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -129,15 +129,15 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
             ))}
           </div>
           <div style={{ marginTop: 16, padding: "10px 12px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-sm)", fontSize: "0.75rem", color: "var(--text-muted)" }}>
-            💡 These tone markers are detected from your past posts and used to constrain the Copywriter agent. The Guardrail checks every draft against this profile.
+            These tone markers are detected from your past posts and used to constrain the Copywriter agent. The Guardrail checks every draft against this profile.
           </div>
         </div>
       </div>
 
       {/* Guidelines with temporal validity */}
-      <div className="card animate-in" style={{ marginTop: 24 }}>
+      <div className="card glass animate-in" style={{ marginTop: 24 }}>
         <div className="card-header">
-          <h3 className="card-title">📋 Active Brand Guidelines</h3>
+          <h3 className="card-title">Active Brand Guidelines</h3>
           <span className="badge badge-success">valid_from / valid_to filtering</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -197,8 +197,8 @@ function getMockBrand() {
 
 function getMockGuidelines() {
   return [
-    { title: "Core Tone", content: "Warm, encouraging, and real. Never preachy or condescending. Use 'you' and 'we' — talk WITH the audience, not AT them.", category: "tone", valid_from: "2026-01-01" },
-    { title: "Emoji Guidelines", content: "Use 1-3 emojis per post, placed naturally within sentences. Favorites: 💪🔥✨🌿. Never: 🙏 (overused), 💯 (feels dated).", category: "tone", valid_from: "2026-01-01" },
+    { title: "Core Tone", content: "Warm, encouraging, and real. Never preachy or condescending. Use 'you' and 'we' - talk WITH the audience, not AT them.", category: "tone", valid_from: "2026-01-01" },
+    { title: "Emoji Guidelines", content: "Use 1-3 emojis per post, placed naturally within sentences. Favorites: strength, fire, sparkle, leaf. Never: prayer (overused), 100 (feels dated).", category: "tone", valid_from: "2026-01-01" },
     { title: "Hashtag Strategy", content: "3-5 hashtags max, placed at the very end after a line break. Mix of branded (#FitVibeFlow) and discovery.", category: "tone", valid_from: "2026-03-01" },
     { title: "Topics to Avoid", content: "No diet culture. No before/after body transformations. No medical claims. No supplement endorsements without disclosure.", category: "banned", valid_from: "2026-01-01" },
     { title: "Content Pillars", content: "1. Workout routines (40%) 2. Nutrition (25%) 3. Mindfulness (20%) 4. Community stories (15%)", category: "topics", valid_from: "2026-01-01" },
