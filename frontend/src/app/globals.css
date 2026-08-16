@@ -4,10 +4,12 @@
    Matching the PPT aesthetic
    */
 
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
-
 /* CSS Custom Properties*/
 :root {
+  /* Typography variables */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
   /* Base Colors */
   --bg-primary: #0a0a0a;
   --bg-secondary: #111111;
@@ -85,7 +87,7 @@ html {
 }
 
 body {
-  font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.6;
@@ -95,6 +97,10 @@ body {
 }
 
 /* Typography */
+h1, h2, h3, h4 {
+  font-family: var(--font-heading);
+}
+
 h1 {
   font-size: 2rem;
   font-weight: 800;
@@ -528,7 +534,7 @@ a:hover {
   gap: var(--space-sm);
   padding: var(--space-sm) var(--space-lg);
   border-radius: var(--radius-md);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -627,7 +633,7 @@ a:hover {
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius-md);
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-sans);
   font-size: 0.875rem;
   transition: all var(--transition-normal);
   outline: none;
