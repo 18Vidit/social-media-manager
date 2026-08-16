@@ -320,11 +320,15 @@ small,
 
 html,
 body {
-  font-family: var(--font-family);
+  font-family: var(--font-sans);
   background: var(--bg-primary);
   color: var(--text-primary);
   margin: 0;
   padding: 0;
+}
+
+input, select, textarea, button {
+  font-family: inherit;
 }
 
 /* Glassmorphism utility */
