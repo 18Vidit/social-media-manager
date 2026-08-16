@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import ToneRadarChart from "@/components/ui/ToneRadarChart";
 
 interface Props {
   brandId: string;
@@ -102,31 +103,39 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
         {/* Tone Radar */}
         <div className="card glass animate-in">
           <div className="card-header">
-            <h3 className="card-title">Tone Profile</h3>
+            <h3 className="card-title">Tone Profile DNA</h3>
             <span className="badge badge-purple">Voice DNA</span>
           </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {Object.entries(toneKeywords).sort(([, a]: any, [, b]: any) => b - a).map(([tone, score]: any) => (
-              <div key={tone} style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{
-                  fontWeight: 600, fontSize: "0.8125rem", minWidth: 110,
-                  textTransform: "capitalize", color: "var(--text-secondary)",
-                }}>
-                  {tone}
-                </span>
-                <div style={{ flex: 1 }}>
-                  <div className="progress-bar" style={{ height: 8 }}>
-                    <div className="progress-fill" style={{
-                      width: `${Math.min(score * 100, 100)}%`,
-                      background: score > 0.5 ? "var(--gradient-success)" : "var(--gradient-primary)",
-                    }} />
+          
+          <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+            {/* SVG Radar Chart Visualizer */}
+            <div style={{ background: "rgba(0,0,0,0.2)", borderRadius: "var(--radius-md)", padding: "10px 0" }}>
+              <ToneRadarChart tones={Object.keys(toneKeywords).length > 0 ? toneKeywords : getMockBrand().structural_profile.tone_keywords} />
+            </div>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {Object.entries(toneKeywords).sort(([, a]: any, [, b]: any) => b - a).map(([tone, score]: any) => (
+                <div key={tone} style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{
+                    fontWeight: 600, fontSize: "0.8125rem", minWidth: 110,
+                    textTransform: "capitalize", color: "var(--text-secondary)",
+                  }}>
+                    {tone}
+                  </span>
+                  <div style={{ flex: 1 }}>
+                    <div className="progress-bar" style={{ height: 6 }}>
+                      <div className="progress-fill" style={{
+                        width: `${Math.min(score * 100, 100)}%`,
+                        background: score > 0.65 ? "var(--gradient-success)" : "var(--gradient-primary)",
+                      }} />
+                    </div>
                   </div>
+                  <span style={{ fontWeight: 700, fontSize: "0.8125rem", minWidth: 45, textAlign: "right" }}>
+                    {(score * 100).toFixed(0)}%
+                  </span>
                 </div>
-                <span style={{ fontWeight: 700, fontSize: "0.8125rem", minWidth: 45, textAlign: "right" }}>
-                  {(score * 100).toFixed(0)}%
-                </span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           <div style={{ marginTop: 16, padding: "10px 12px", background: "var(--bg-tertiary)", borderRadius: "var(--radius-sm)", fontSize: "0.75rem", color: "var(--text-muted)" }}>
             These tone markers are detected from your past posts and used to constrain the Copywriter agent. The Guardrail checks every draft against this profile.

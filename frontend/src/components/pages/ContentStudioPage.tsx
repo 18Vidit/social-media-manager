@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { api } from "@/lib/api";
+import PhonePreviewMockup from "@/components/ui/PhonePreviewMockup";
 
 interface Props {
   brandId: string;
@@ -31,6 +32,12 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
   const [pipelineTrace, setPipelineTrace] = useState<any[]>([]);
   const [recommendedTime, setRecommendedTime] = useState<any>(null);
   const [duration, setDuration] = useState<number>(0);
+  
+  // Selection & Editing States
+  const [selectedDraftIdx, setSelectedDraftIdx] = useState<number>(0);
+  const [editingDraftId, setEditingDraftId] = useState<string | null>(null);
+  const [editContent, setEditContent] = useState("");
+  const [editHook, setEditHook] = useState("");
 
   const handleGenerate = async () => {
     if (!topic.trim()) {
@@ -51,6 +58,8 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
       });
       
       setDrafts(result.drafts || []);
+      setSelectedDraftIdx(0);
+      setEditingDraftId(null);
       setPipelineTrace(result.pipeline_trace || []);
       setRecommendedTime(result.recommended_time);
       setDuration(result.total_duration_ms || 0);
@@ -58,7 +67,10 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
     } catch (err: any) {
       addToast("error", `Generation failed: ${err.message}. Make sure the backend is running.`);
       // Set mock data for demo
-      setDrafts(getMockDrafts(topic, platform));
+      const mockD = getMockDrafts(topic, platform);
+      setDrafts(mockD);
+      setSelectedDraftIdx(0);
+      setEditingDraftId(null);
       setPipelineTrace(getMockTrace());
       setDuration(2340);
       setRecommendedTime({ datetime: new Date().toISOString(), reason: "Saturday 8PM - your audience's peak engagement window", method: "linucb_bandit" });
@@ -183,95 +195,180 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
         </div>
       )}
 
-      {/* Generated Variants */}
+      {/* Generated Variants with Live Phone Preview */}
       {drafts.length > 0 && (
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <h3 style={{ color: "var(--text-secondary)", fontSize: "0.8125rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
-            Generated Variants ({drafts.length})
-          </h3>
-          {drafts.map((draft, i) => (
-            <div key={draft.id || i} className={`variant-card glass animate-in ${i === 0 ? "recommended" : ""}`}>
-              {/* Hook highlight */}
-              <div style={{
-                padding: "8px 12px",
-                background: "rgba(0, 212, 255, 0.08)",
-                borderRadius: "var(--radius-sm)",
-                borderLeft: "3px solid var(--accent-cyan)",
-                marginBottom: 12,
-                fontSize: "0.8125rem",
-                fontWeight: 600,
-              }}>
-                Hook: {draft.hook}
-              </div>
-
-              {/* Content */}
-              <div className="variant-content">{draft.content}</div>
-
-              {/* Hashtags */}
-              {draft.hashtags && draft.hashtags.length > 0 && (
-                <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
-                  {draft.hashtags.map((tag: string, j: number) => (
-                    <span key={j} className="badge badge-info">{tag}</span>
-                  ))}
-                </div>
-              )}
-
-              {/* Scores */}
-              <div className="variant-scores">
-                <div className="score-meter">
-                  <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>Voice Match</span>
-                  <div className="score-bar">
-                    <div
-                      className={`score-fill ${getScoreClass(draft.voice_similarity)}`}
-                      style={{ width: `${(draft.voice_similarity || 0.5) * 100}%` }}
-                    />
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.8fr", gap: 24, alignItems: "start" }} className="grid-2-1">
+          {/* Left Column: Variant cards list */}
+          <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            <h3 style={{ color: "var(--text-secondary)", fontSize: "0.8125rem", textTransform: "uppercase", letterSpacing: "0.05em" }}>
+              Generated Variants ({drafts.length})
+            </h3>
+            {drafts.map((draft, i) => {
+              const isSelected = selectedDraftIdx === i;
+              const isEditing = editingDraftId === draft.id;
+              
+              return (
+                <div
+                  key={draft.id || i}
+                  className={`variant-card glass animate-in ${isSelected ? "selected" : ""} ${i === 0 ? "recommended" : ""}`}
+                  style={{
+                    cursor: "pointer",
+                    borderColor: isSelected ? "var(--accent-cyan)" : "var(--border-subtle)",
+                    boxShadow: isSelected ? "var(--shadow-glow)" : "none",
+                    padding: "var(--space-lg)"
+                  }}
+                  onClick={() => {
+                    setSelectedDraftIdx(i);
+                    // Clear other editing states if switching cards
+                    if (editingDraftId !== draft.id) {
+                      setEditingDraftId(null);
+                    }
+                  }}
+                >
+                  {/* Hook highlight */}
+                  <div style={{
+                    padding: "8px 12px",
+                    background: "rgba(0, 212, 255, 0.08)",
+                    borderRadius: "var(--radius-sm)",
+                    borderLeft: "3px solid var(--accent-cyan)",
+                    marginBottom: 12,
+                    fontSize: "0.8125rem",
+                    fontWeight: 600,
+                  }}>
+                    Hook: {draft.hook}
                   </div>
-                  <span className="score-value" style={{ color: draft.voice_similarity >= 0.7 ? "var(--accent-green)" : "var(--accent-yellow)" }}>
-                    {((draft.voice_similarity || 0.5) * 100).toFixed(0)}%
-                  </span>
-                </div>
-                <div className="score-meter">
-                  <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>Slop Score</span>
-                  <div className="score-bar">
-                    <div
-                      className={`score-fill ${draft.slop_score <= 0.3 ? "high" : "low"}`}
-                      style={{ width: `${Math.max(10, (1 - (draft.slop_score || 0)) * 100)}%` }}
-                    />
-                  </div>
-                  <span className="score-value" style={{ color: draft.slop_score <= 0.3 ? "var(--accent-green)" : "var(--accent-red)" }}>
-                    {((draft.slop_score || 0) * 100).toFixed(0)}%
-                  </span>
-                </div>
-              </div>
 
-              {/* Explanation */}
-              {draft.explanation && (
-                <div style={{
-                  marginTop: 12,
-                  padding: "8px 12px",
-                  background: "var(--bg-tertiary)",
-                  borderRadius: "var(--radius-sm)",
-                  fontSize: "0.75rem",
-                  color: "var(--text-muted)",
-                }}>
-                  Why this ranking: {draft.explanation.why}
-                </div>
-              )}
+                  {isEditing ? (
+                    <div onClick={e => e.stopPropagation()} style={{ display: "flex", flexDirection: "column", gap: 12, marginTop: 12 }}>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: "0.75rem" }}>Edit Hook Phrase</label>
+                        <input
+                          className="form-input"
+                          value={editHook}
+                          onChange={e => setEditHook(e.target.value)}
+                          style={{ fontSize: "0.8125rem", padding: "6px 10px" }}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label" style={{ fontSize: "0.75rem" }}>Edit Caption Text</label>
+                        <textarea
+                          className="form-textarea"
+                          value={editContent}
+                          onChange={e => setEditContent(e.target.value)}
+                          style={{ fontSize: "0.8125rem", minHeight: 120, padding: "8px 10px" }}
+                        />
+                      </div>
+                      <div style={{ display: "flex", gap: 8 }}>
+                        <button
+                          className="btn btn-success btn-sm"
+                          onClick={() => {
+                            setDrafts(prev => prev.map(d => d.id === draft.id ? { ...d, content: editContent, hook: editHook } : d));
+                            setEditingDraftId(null);
+                            addToast("success", "Draft updated live!");
+                          }}
+                        >
+                          Save changes
+                        </button>
+                        <button className="btn btn-secondary btn-sm" onClick={() => setEditingDraftId(null)}>
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Content */}
+                      <div className="variant-content">{draft.content}</div>
 
-              {/* Actions */}
-              <div className="variant-actions">
-                <button className="btn btn-success btn-sm" onClick={() => handleApprove(draft.id)}>
-                  Approve & Schedule
-                </button>
-                <button className="btn btn-danger btn-sm" onClick={() => handleReject(draft.id)}>
-                  Reject
-                </button>
-                <button className="btn btn-secondary btn-sm">
-                  Edit
-                </button>
-              </div>
+                      {/* Hashtags */}
+                      {draft.hashtags && draft.hashtags.length > 0 && (
+                        <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
+                          {draft.hashtags.map((tag: string, j: number) => (
+                            <span key={j} className="badge badge-info">{tag}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Scores */}
+                      <div className="variant-scores">
+                        <div className="score-meter">
+                          <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>Voice Match</span>
+                          <div className="score-bar">
+                            <div
+                              className={`score-fill ${getScoreClass(draft.voice_similarity)}`}
+                              style={{ width: `${(draft.voice_similarity || 0.5) * 100}%` }}
+                            />
+                          </div>
+                          <span className="score-value" style={{ color: draft.voice_similarity >= 0.7 ? "var(--accent-green)" : "var(--accent-yellow)" }}>
+                            {((draft.voice_similarity || 0.5) * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="score-meter">
+                          <span style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>Slop Score</span>
+                          <div className="score-bar">
+                            <div
+                              className={`score-fill ${draft.slop_score <= 0.3 ? "high" : "low"}`}
+                              style={{ width: `${Math.max(10, (1 - (draft.slop_score || 0)) * 100)}%` }}
+                            />
+                          </div>
+                          <span className="score-value" style={{ color: draft.slop_score <= 0.3 ? "var(--accent-green)" : "var(--accent-red)" }}>
+                            {((draft.slop_score || 0) * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Explanation */}
+                      {draft.explanation && (
+                        <div style={{
+                          marginTop: 12,
+                          padding: "8px 12px",
+                          background: "var(--bg-tertiary)",
+                          borderRadius: "var(--radius-sm)",
+                          fontSize: "0.75rem",
+                          color: "var(--text-muted)",
+                        }}>
+                          Why this ranking: {draft.explanation.why}
+                        </div>
+                      )}
+
+                      {/* Actions */}
+                      <div className="variant-actions">
+                        <button className="btn btn-success btn-sm" onClick={() => handleApprove(draft.id)}>
+                          Approve & Schedule
+                        </button>
+                        <button className="btn btn-danger btn-sm" onClick={() => handleReject(draft.id)}>
+                          Reject
+                        </button>
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingDraftId(draft.id);
+                            setEditContent(draft.content);
+                            setEditHook(draft.hook);
+                          }}
+                        >
+                          Quick Edit
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Right Column: Live mobile mockup preview */}
+          <div className="card glass animate-in" style={{ position: "sticky", top: 20, display: "flex", flexDirection: "column", alignItems: "center", padding: "20px 10px" }}>
+            <div style={{ alignSelf: "flex-start", width: "100%", marginBottom: 12 }} className="card-header">
+              <h3 className="card-title">📱 Live Creator Preview</h3>
+              <span className="badge badge-info">Format Mockups</span>
             </div>
-          ))}
+            <PhonePreviewMockup
+              content={drafts[selectedDraftIdx]?.content || ""}
+              likes={drafts[selectedDraftIdx]?.predicted_engagement ? drafts[selectedDraftIdx].predicted_engagement * 100 : 7200}
+              commentsCount={drafts[selectedDraftIdx]?.predicted_engagement ? Math.floor(drafts[selectedDraftIdx].predicted_engagement * 6.5) : 560}
+            />
+          </div>
         </div>
       )}
 

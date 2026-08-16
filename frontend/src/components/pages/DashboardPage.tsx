@@ -1,6 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import AnalyticsLineChart from "@/components/ui/AnalyticsLineChart";
+
+const mockWeeklyTrend = [
+  { label: "Mon", value: 1240 },
+  { label: "Tue", value: 1850 },
+  { label: "Wed", value: 1620 },
+  { label: "Thu", value: 2100 },
+  { label: "Fri", value: 2450 },
+  { label: "Sat", value: 3100 },
+  { label: "Sun", value: 2800 },
+];
 
 interface Props {
   brandId: string;
@@ -101,29 +112,36 @@ export default function DashboardPage({ brandId, addToast, backendStatus }: Prop
               <h3 className="card-title">Engagement Trends</h3>
               <span className="badge badge-info">This Week</span>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {(deltas.length > 0 ? deltas : getMockDeltas()).map((delta: any, i: number) => (
-                <div key={i} style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  padding: "12px 16px",
-                  background: "var(--bg-tertiary)",
-                  borderRadius: "var(--radius-md)",
-                }}>
-                  <div>
-                    <div style={{ fontWeight: 600, fontSize: "0.875rem", textTransform: "capitalize" }}>
-                      {delta.metric}
+            
+            <div style={{ display: "grid", gridTemplateColumns: "1.8fr 1.2fr", gap: 20, alignItems: "center" }}>
+              <div style={{ padding: "0 10px" }}>
+                <AnalyticsLineChart data={mockWeeklyTrend} height={180} />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                {(deltas.length > 0 ? deltas : getMockDeltas()).map((delta: any, i: number) => (
+                  <div key={i} style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    padding: "8px 12px",
+                    background: "var(--bg-tertiary)",
+                    borderRadius: "var(--radius-sm)",
+                    borderLeft: `3px solid ${delta.direction === "up" ? "var(--accent-green)" : "var(--accent-red)"}`
+                  }}>
+                    <div>
+                      <div style={{ fontWeight: 600, fontSize: "0.75rem", textTransform: "capitalize" }}>
+                        {delta.metric}
+                      </div>
+                      <div style={{ fontSize: "0.625rem", color: "var(--text-muted)", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 100 }}>
+                        {delta.context}
+                      </div>
                     </div>
-                    <div style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}>
-                      {delta.context}
-                    </div>
+                    <span className={`stat-change ${delta.direction === "up" ? "up" : "down"}`} style={{ fontSize: "0.6875rem", padding: "1px 6px" }}>
+                      {delta.change}
+                    </span>
                   </div>
-                  <span className={`stat-change ${delta.direction === "up" ? "up" : "down"}`}>
-                    {delta.direction === "up" ? "up" : "down"} {delta.change}
-                  </span>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </div>
 
@@ -154,30 +172,52 @@ export default function DashboardPage({ brandId, addToast, backendStatus }: Prop
         <div>
           <div className="card glass animate-in" style={{ marginBottom: 24 }}>
             <div className="card-header">
-              <h3 className="card-title">Agent Activity</h3>
+              <h3 className="card-title">Agent Pipeline Status</h3>
               <div className="agent-dot" title="All systems operational" />
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {[
-                { name: "Scout", detail: "Last scan: 2 hrs ago", status: "active" },
-                { name: "Strategist", detail: "Heuristic heatmap to LinUCB bandit", status: "active" },
-                { name: "Copywriter", detail: "Content Generation Subgraph", status: "active" },
-                { name: "Guardrail", detail: "Voice-Drift Check", status: "active" },
-                { name: "Sentinel", detail: "45 triaged", status: "active" },
+                { name: "Scout", detail: "Last scan: 2 hrs ago", status: "active", desc: "Trend Scanning", icon: "🔍" },
+                { name: "Strategist", detail: "Optimization Active", status: "active", desc: "Peak-Time Prediction", icon: "📊" },
+                { name: "Copywriter", detail: "Subgraphs Loaded", status: "active", desc: "Content Drafting", icon: "✍️" },
+                { name: "Guardrail", detail: "Centroid Audit Ready", status: "active", desc: "Voice Alignment", icon: "🛡️" },
+                { name: "Sentinel", detail: "Triage Matrix Engaged", status: "active", desc: "Comment Response", icon: "👁️" },
               ].map((agent, i) => (
                 <div key={i} style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 12,
-                  padding: "10px 12px",
-                  background: "var(--bg-tertiary)",
-                  borderRadius: "var(--radius-md)",
+                  position: "relative"
                 }}>
-                  <div className={`agent-dot ${agent.status}`} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontWeight: 600, fontSize: "0.8125rem" }}>{agent.name}</div>
-                    <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{agent.detail}</div>
+                  <div style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 12,
+                    padding: "10px 14px",
+                    background: "var(--bg-tertiary)",
+                    borderRadius: "var(--radius-md)",
+                    border: "1px solid var(--border-subtle)",
+                    transition: "all var(--transition-normal)",
+                  }}
+                  className="agent-pipeline-node"
+                  >
+                    <span style={{ fontSize: "1.15rem" }}>{agent.icon}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                        <span style={{ fontWeight: 700, fontSize: "0.8125rem" }}>{agent.name}</span>
+                        <span className={`badge badge-success`} style={{ fontSize: "0.5rem", padding: "1px 4px" }}>{agent.status}</span>
+                      </div>
+                      <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{agent.desc} • {agent.detail}</div>
+                    </div>
                   </div>
+                  {i < 4 && (
+                    <div style={{
+                      position: "absolute",
+                      left: 23,
+                      bottom: -12,
+                      width: 2,
+                      height: 12,
+                      background: "linear-gradient(180deg, var(--accent-cyan) 0%, rgba(123, 47, 247, 0.2) 100%)",
+                      zIndex: 0
+                    }} />
+                  )}
                 </div>
               ))}
             </div>
