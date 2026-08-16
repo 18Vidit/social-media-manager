@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import InteractiveRiskMatrix from "@/components/ui/InteractiveRiskMatrix";
 
 interface Props {
   brandId: string;
@@ -103,64 +104,80 @@ export default function CommentsPage({ brandId, addToast, backendStatus }: Props
         </div>
       )}
 
-      {/* Risk Matrix Grid */}
-      <div className="risk-matrix">
-        {cells.map((cell) => (
-          <div key={cell.key} className={`risk-cell ${cell.cssClass}`}>
-            <div className="risk-cell-header">
-              <span>{cell.icon}</span>
-              <div>
-                <div style={{ fontWeight: 700, fontSize: "0.875rem" }}>{cell.title}</div>
-                <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{cell.description}</div>
-              </div>
-              <span className="cell-count">{cell.items.length}</span>
-            </div>
-            <div style={{ maxHeight: 300, overflowY: "auto" }}>
-              {cell.items.length === 0 ? (
-                <div style={{ padding: 16, textAlign: "center", color: "var(--text-muted)", fontSize: "0.75rem" }}>
-                  No comments in this category
-                </div>
-              ) : (
-                cell.items.map((comment: any, i: number) => (
-                  <div key={i} className="comment-card">
-                    <div className="comment-header">
-                      <span className="comment-author">@{comment.author_username || comment.author}</span>
-                      {(comment.is_verified || comment.author_is_verified) && (
-                        <span className="comment-verified">✓ verified</span>
-                      )}
-                      <span className={`badge ${
-                        comment.sentiment_label === "positive" ? "badge-success" :
-                        comment.sentiment_label === "negative" ? "badge-danger" : "badge-info"
-                      }`} style={{ marginLeft: "auto", fontSize: "0.5625rem" }}>
-                        {comment.sentiment_label || "neutral"}
-                      </span>
-                    </div>
-                    <div className="comment-text">{comment.content || comment.text}</div>
-                    <div className="comment-meta">
-                      <span>Intent: {comment.intent}</span>
-                      <span>Confidence: {((comment.intent_confidence || 0) * 100).toFixed(0)}%</span>
-                      <span>Sentiment: {comment.sentiment_score?.toFixed(2)}</span>
-                    </div>
-                    {(comment.auto_reply || comment.drafted_reply) && (
-                      <div style={{
-                        marginTop: 8,
-                        padding: "8px 12px",
-                        background: "rgba(0, 245, 160, 0.06)",
-                        borderRadius: "var(--radius-sm)",
-                        borderLeft: "2px solid var(--accent-green)",
-                        fontSize: "0.75rem",
-                        color: "var(--text-secondary)",
-                      }}>
-                        {comment.auto_reply ? "Auto-reply: " : "Drafted reply: "}
-                        {comment.auto_reply || comment.drafted_reply}
-                      </div>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
+      {/* Threat mapping layout grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "1.1fr 2fr", gap: 24, alignItems: "start" }} className="grid-2-1">
+        
+        {/* Left column: Visual Coordinate Mapping */}
+        <div className="card glass animate-in" style={{ position: "sticky", top: 20 }}>
+          <div className="card-header">
+            <h3 className="card-title">🎯 Threat Mapping</h3>
+            <span className="badge badge-purple">Risk Plot</span>
           </div>
-        ))}
+          <p style={{ fontSize: "0.75rem", color: "var(--text-muted)", marginBottom: 12, lineHeight: 1.4 }}>
+            Visual plot of intent confidence vs brand risk. Bubbles represent comments. Auto-reply thresholds filter low-threat inputs automatically.
+          </p>
+          <InteractiveRiskMatrix triageData={triage || getMockTriage()} />
+        </div>
+
+        {/* Right column: Risk Matrix Grid */}
+        <div className="risk-matrix" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
+          {cells.map((cell) => (
+            <div key={cell.key} className={`risk-cell ${cell.cssClass}`} style={{ minHeight: 220 }}>
+              <div className="risk-cell-header">
+                <span>{cell.icon}</span>
+                <div>
+                  <div style={{ fontWeight: 700, fontSize: "0.8125rem" }}>{cell.title}</div>
+                  <div style={{ fontSize: "0.6875rem", color: "var(--text-muted)" }}>{cell.description}</div>
+                </div>
+                <span className="cell-count">{cell.items.length}</span>
+              </div>
+              <div style={{ maxHeight: 260, overflowY: "auto" }}>
+                {cell.items.length === 0 ? (
+                  <div style={{ padding: 16, textAlign: "center", color: "var(--text-muted)", fontSize: "0.725rem" }}>
+                    No comments in this category
+                  </div>
+                ) : (
+                  cell.items.map((comment: any, i: number) => (
+                    <div key={i} className="comment-card" style={{ padding: 10 }}>
+                      <div className="comment-header">
+                        <span className="comment-author">@{comment.author_username || comment.author}</span>
+                        {(comment.is_verified || comment.author_is_verified) && (
+                          <span className="comment-verified" style={{ fontSize: "0.6875rem" }}>✓</span>
+                        )}
+                        <span className={`badge ${
+                          comment.sentiment_label === "positive" ? "badge-success" :
+                          comment.sentiment_label === "negative" ? "badge-danger" : "badge-info"
+                        }`} style={{ marginLeft: "auto", fontSize: "0.5rem", padding: "1px 4px" }}>
+                          {comment.sentiment_label || "neutral"}
+                        </span>
+                      </div>
+                      <div className="comment-text" style={{ fontSize: "0.75rem" }}>{comment.content || comment.text}</div>
+                      <div className="comment-meta" style={{ fontSize: "0.625rem", marginTop: 4 }}>
+                        <span>Intent: {comment.intent}</span>
+                        <span>Confidence: {((comment.intent_confidence || 0.8) * 100).toFixed(0)}%</span>
+                      </div>
+                      {(comment.auto_reply || comment.drafted_reply) && (
+                        <div style={{
+                          marginTop: 6,
+                          padding: "6px 8px",
+                          background: "rgba(0, 245, 160, 0.05)",
+                          borderRadius: "var(--radius-sm)",
+                          borderLeft: "2px solid var(--accent-green)",
+                          fontSize: "0.6875rem",
+                          color: "var(--text-secondary)",
+                        }}>
+                          <strong>{comment.auto_reply ? "Auto: " : "Draft: "}</strong>
+                          {comment.auto_reply || comment.drafted_reply}
+                        </div>
+                      )}
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
       </div>
     </div>
   );

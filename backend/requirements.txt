@@ -20,11 +20,11 @@ langchain-google-genai>=2.0.0
 langsmith>=0.1.120
 
 # Embeddings
-sentence-transformers>=3.1.0
+# sentence-transformers>=3.1.0
 
 # Sentiment Analysis (cardiffnlp/twitter-roberta-base)
-transformers>=4.44.0
-torch>=2.4.0
+# transformers>=4.44.0
+# torch>=2.4.0
 
 # Utilities
 httpx>=0.27.0

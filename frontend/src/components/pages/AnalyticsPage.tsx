@@ -2,6 +2,17 @@
 
 import { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import AnalyticsLineChart from "@/components/ui/AnalyticsLineChart";
+
+const mockDailyTrend = [
+  { label: "Aug 10", value: 1200 },
+  { label: "Aug 11", value: 1450 },
+  { label: "Aug 12", value: 1300 },
+  { label: "Aug 13", value: 1900 },
+  { label: "Aug 14", value: 2350 },
+  { label: "Aug 15", value: 3100 },
+  { label: "Aug 16", value: 2950 },
+];
 
 interface Props {
   brandId: string;
@@ -79,6 +90,17 @@ export default function AnalyticsPage({ brandId, addToast, backendStatus }: Prop
               : "65.3"}
           </div>
           <div className="stat-label">Average EQI Score</div>
+        </div>
+      </div>
+
+      {/* Engagement Trend Chart Card */}
+      <div className="card glass animate-in" style={{ marginBottom: 24 }}>
+        <div className="card-header">
+          <h3 className="card-title">📈 Engagement Velocity Over Time</h3>
+          <span className="badge badge-success">Live Track</span>
+        </div>
+        <div style={{ padding: "10px 0" }}>
+          <AnalyticsLineChart data={mockDailyTrend} height={220} />
         </div>
       </div>
 
