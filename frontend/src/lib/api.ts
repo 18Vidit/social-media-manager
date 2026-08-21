@@ -75,4 +75,17 @@ export const api = {
   
   // Trends
   getTrends: (platform?: string) => fetchAPI(`/api/trends?platform=${platform || 'instagram'}`),
+
+  // Instagram Integration
+  getInstagramStatus: (brandId?: string) => fetchAPI(`/api/instagram/status${brandId ? `?brand_id=${brandId}` : ''}`),
+  connectInstagram: (data: { access_token: string; account_id?: string; brand_id?: string; auto_sync?: boolean }) =>
+    fetchAPI('/api/instagram/connect', { method: 'POST', body: JSON.stringify(data) }),
+  syncInstagram: (brandId?: string, limit: number = 25) =>
+    fetchAPI('/api/instagram/sync', { method: 'POST', body: JSON.stringify({ brand_id: brandId, limit }) }),
+  disconnectInstagram: (brandId?: string) =>
+    fetchAPI('/api/instagram/disconnect', { method: 'POST', body: JSON.stringify({ brand_id: brandId }) }),
+  publishToInstagram: (data: { brand_id?: string; draft_id?: string; caption: string; image_url?: string }) =>
+    fetchAPI('/api/instagram/publish', { method: 'POST', body: JSON.stringify(data) }),
+  replyInstagramComment: (data: { brand_id?: string; comment_id: string; message: string }) =>
+    fetchAPI('/api/instagram/reply-comment', { method: 'POST', body: JSON.stringify(data) }),
 };

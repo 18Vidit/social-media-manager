@@ -8,6 +8,9 @@ interface Props {
   brandId: string;
   addToast: (type: "success" | "error" | "info", message: string) => void;
   backendStatus: string;
+  onOpenInstagramModal?: () => void;
+  instagramAccount?: any;
+  refreshInstagramStatus?: () => void;
 }
 
 interface Draft {
@@ -24,10 +27,18 @@ interface Draft {
   recommended_time_reason: string | null;
 }
 
-export default function ContentStudioPage({ brandId, addToast, backendStatus }: Props) {
+export default function ContentStudioPage({
+  brandId,
+  addToast,
+  backendStatus,
+  onOpenInstagramModal,
+  instagramAccount,
+  refreshInstagramStatus,
+}: Props) {
   const [topic, setTopic] = useState("");
   const [platform, setPlatform] = useState("instagram");
   const [generating, setGenerating] = useState(false);
+  const [publishing, setPublishing] = useState<{ [key: string]: boolean }>({});
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [pipelineTrace, setPipelineTrace] = useState<any[]>([]);
   const [recommendedTime, setRecommendedTime] = useState<any>(null);
@@ -87,6 +98,26 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
     } catch {
       addToast("info", "Draft approved (demo mode).");
     }
+  };
+
+  const handlePublishToInstagram = async (draft: Draft) => {
+    setPublishing(prev => ({ ...prev, [draft.id]: true }));
+    try {
+      if (instagramAccount?.connected) {
+        addToast("info", "Publishing post directly to Instagram...");
+        const res = await api.publishToInstagram({
+          brand_id: brandId,
+          draft_id: draft.id,
+          caption: `${draft.hook ? draft.hook + "\n\n" : ""}${draft.content}\n\n${(draft.hashtags || []).join(" ")}`,
+        });
+        addToast("success", `Successfully published to Instagram! Post ID: ${res.post_id || 'LIVE'}`);
+      } else {
+        addToast("info", "Publish simulated in Sandbox Demo mode. Connect Instagram to post live!");
+      }
+    } catch (err: any) {
+      addToast("error", `Publish failed: ${err.message}`);
+    }
+    setPublishing(prev => ({ ...prev, [draft.id]: false }));
   };
 
   const handleReject = async (draftId: string) => {
@@ -331,9 +362,17 @@ export default function ContentStudioPage({ brandId, addToast, backendStatus }: 
                       )}
 
                       {/* Actions */}
-                      <div className="variant-actions">
+                      <div className="variant-actions" style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                         <button className="btn btn-success btn-sm" onClick={() => handleApprove(draft.id)}>
                           Approve & Schedule
+                        </button>
+                        <button
+                          className="btn btn-primary btn-sm"
+                          style={{ background: "linear-gradient(135deg, #e1306c, #833ab4)", border: "none" }}
+                          onClick={() => handlePublishToInstagram(draft)}
+                          disabled={publishing[draft.id]}
+                        >
+                          {publishing[draft.id] ? "Publishing..." : "🚀 Publish to Instagram"}
                         </button>
                         <button className="btn btn-danger btn-sm" onClick={() => handleReject(draft.id)}>
                           Reject

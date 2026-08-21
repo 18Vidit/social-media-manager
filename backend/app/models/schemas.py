@@ -47,10 +47,56 @@ class BrandResponse(BaseModel):
     weekly_post_limit: int
     structural_profile: Optional[StructuralProfile] = None
     post_count: int = 0
+    is_instagram_connected: bool = False
+    instagram_account_id: Optional[str] = None
+    instagram_profile_pic: Optional[str] = None
+    instagram_bio: Optional[str] = None
+    instagram_followers_count: Optional[int] = None
+    instagram_connected_at: Optional[datetime] = None
+    instagram_last_synced_at: Optional[datetime] = None
     created_at: datetime
 
     class Config:
         from_attributes = True
+
+
+# ──────────────────────────────────────────────
+# Instagram Integration
+# ──────────────────────────────────────────────
+
+class InstagramConnectRequest(BaseModel):
+    brand_id: Optional[str] = None
+    access_token: str
+    account_id: Optional[str] = None  # Optional IG Business Account ID if already known
+    auto_sync: bool = True
+
+class InstagramSyncRequest(BaseModel):
+    brand_id: Optional[str] = None
+    limit: int = 25
+
+class InstagramPublishRequest(BaseModel):
+    brand_id: Optional[str] = None
+    draft_id: Optional[str] = None
+    caption: str
+    image_url: Optional[str] = None
+
+class InstagramReplyRequest(BaseModel):
+    brand_id: Optional[str] = None
+    comment_id: str
+    message: str
+
+class InstagramStatusResponse(BaseModel):
+    connected: bool
+    account_id: Optional[str] = None
+    username: Optional[str] = None
+    name: Optional[str] = None
+    profile_picture_url: Optional[str] = None
+    followers_count: Optional[int] = None
+    media_count: Optional[int] = None
+    biography: Optional[str] = None
+    last_synced_at: Optional[str] = None
+    synced_posts_count: int = 0
+    synced_comments_count: int = 0
 
 
 # ──────────────────────────────────────────────

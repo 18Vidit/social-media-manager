@@ -88,6 +88,16 @@ class Brand(Base):
     # Posting limits (§6.8 sustainable cadence)
     weekly_post_limit: Mapped[int] = mapped_column(Integer, default=7)
     
+    # Instagram Integration
+    is_instagram_connected: Mapped[bool] = mapped_column(Boolean, default=False)
+    instagram_account_id: Mapped[Optional[str]] = mapped_column(String(100))
+    instagram_access_token: Mapped[Optional[str]] = mapped_column(String(500))
+    instagram_profile_pic: Mapped[Optional[str]] = mapped_column(String(500))
+    instagram_bio: Mapped[Optional[str]] = mapped_column(Text)
+    instagram_followers_count: Mapped[Optional[int]] = mapped_column(Integer)
+    instagram_connected_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    instagram_last_synced_at: Mapped[Optional[datetime]] = mapped_column(DateTime)
+    
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow)
     updated_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -129,8 +139,11 @@ class Post(Base):
     brand_id: Mapped[str] = mapped_column(ForeignKey("brands.id"), nullable=False)
     
     platform: Mapped[str] = mapped_column(String(50), nullable=False)
+    platform_post_id: Mapped[Optional[str]] = mapped_column(String(100))
+    media_url: Mapped[Optional[str]] = mapped_column(String(500))
+    permalink: Mapped[Optional[str]] = mapped_column(String(500))
     content: Mapped[str] = mapped_column(Text, nullable=False)
-    post_type: Mapped[Optional[str]] = mapped_column(String(50))  # carousel, reel, story, text
+    post_type: Mapped[Optional[str]] = mapped_column(String(50))  # carousel, reel, story, text, image, video
     
     # Embedding for RAG retrieval (§7.4a)
     embedding: Mapped[Optional[list]] = mapped_column(Vector(settings.embedding_dimension))

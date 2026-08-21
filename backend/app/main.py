@@ -42,6 +42,7 @@ app.add_middleware(
 from app.api.brands import router as brands_router
 from app.api.content import router as content_router
 from app.api.endpoints import schedule_router, comments_router, analytics_router, trends_router
+from app.api.instagram import router as instagram_router
 
 app.include_router(brands_router)
 app.include_router(content_router)
@@ -49,6 +50,7 @@ app.include_router(schedule_router)
 app.include_router(comments_router)
 app.include_router(analytics_router)
 app.include_router(trends_router)
+app.include_router(instagram_router)
 
 
 @app.get("/")

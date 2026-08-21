@@ -6,6 +6,8 @@ interface SidebarProps {
   activePage: PageId;
   onNavigate: (page: PageId) => void;
   backendStatus: "connecting" | "connected" | "offline";
+  onOpenInstagramModal?: () => void;
+  instagramAccount?: any;
 }
 
 const navItems: { id: PageId; label: string; badge?: number }[] = [
@@ -26,7 +28,13 @@ const agents = [
   { name: "Sentinel", status: "active" as const },
 ];
 
-export default function Sidebar({ activePage, onNavigate, backendStatus }: SidebarProps) {
+export default function Sidebar({
+  activePage,
+  onNavigate,
+  backendStatus,
+  onOpenInstagramModal,
+  instagramAccount,
+}: SidebarProps) {
   return (
     <aside className="sidebar">
       {/* Logo */}
@@ -35,6 +43,56 @@ export default function Sidebar({ activePage, onNavigate, backendStatus }: Sideb
           <div className="logo-text">Pulse</div>
           <div className="logo-tag">AI Social Manager</div>
         </div>
+      </div>
+
+      {/* Instagram Live Connection Button */}
+      <div style={{ padding: "0 16px 12px 16px" }}>
+        <button
+          onClick={onOpenInstagramModal}
+          style={{
+            width: "100%",
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+            padding: "8px 12px",
+            background: instagramAccount?.connected
+              ? "linear-gradient(135deg, rgba(225, 48, 108, 0.15), rgba(131, 58, 180, 0.15))"
+              : "var(--bg-tertiary)",
+            border: instagramAccount?.connected
+              ? "1px solid rgba(225, 48, 108, 0.4)"
+              : "1px solid var(--border-color)",
+            borderRadius: "var(--radius-sm)",
+            cursor: "pointer",
+            textAlign: "left",
+            transition: "all 0.2s ease",
+          }}
+        >
+          <div
+            style={{
+              width: 24,
+              height: 24,
+              borderRadius: 6,
+              background: "linear-gradient(45deg, #f09433, #dc2743, #bc1888)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "0.65rem",
+              fontWeight: 900,
+              color: "#fff",
+              flexShrink: 0,
+            }}
+          >
+            IG
+          </div>
+          <div style={{ flex: 1, minWidth: 0 }}>
+            <div style={{ fontSize: "0.75rem", fontWeight: 700, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+              {instagramAccount?.connected ? `@${instagramAccount.username}` : "Connect Instagram"}
+            </div>
+            <div style={{ fontSize: "0.65rem", color: instagramAccount?.connected ? "var(--accent-green)" : "var(--text-muted)" }}>
+              {instagramAccount?.connected ? "Live Account" : "Demo Mode"}
+            </div>
+          </div>
+        </button>
       </div>
 
       {/* Navigation */}

@@ -8,12 +8,23 @@ interface Props {
   brandId: string;
   addToast: (type: "success" | "error" | "info", message: string) => void;
   backendStatus: string;
+  onOpenInstagramModal?: () => void;
+  instagramAccount?: any;
+  refreshInstagramStatus?: () => void;
 }
 
-export default function BrandVoicePage({ brandId, addToast, backendStatus }: Props) {
+export default function BrandVoicePage({
+  brandId,
+  addToast,
+  backendStatus,
+  onOpenInstagramModal,
+  instagramAccount,
+  refreshInstagramStatus,
+}: Props) {
   const [brand, setBrand] = useState<any>(null);
   const [guidelines, setGuidelines] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
 
   useEffect(() => { loadBrand(); }, [brandId]);
 
@@ -33,6 +44,20 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
     setLoading(false);
   };
 
+  const handleSyncInstagram = async () => {
+    setSyncing(true);
+    try {
+      addToast("info", "Syncing real Instagram posts and calibrating voice DNA...");
+      const res = await api.syncInstagram(brandId, 25);
+      addToast("success", `Synced ${res.posts_synced || res.total_posts_processed || 0} real posts! Voice centroid updated.`);
+      await loadBrand();
+      if (refreshInstagramStatus) refreshInstagramStatus();
+    } catch (err: any) {
+      addToast("error", `Sync failed: ${err.message}`);
+    }
+    setSyncing(false);
+  };
+
   const profile = brand?.structural_profile || getMockBrand().structural_profile;
   const toneKeywords = profile?.tone_keywords || {};
 
@@ -41,29 +66,88 @@ export default function BrandVoicePage({ brandId, addToast, backendStatus }: Pro
       <div className="page-header">
         <div>
           <h1>Brand Voice</h1>
-          <p className="page-subtitle">Your voice fingerprint - learned from 15-20 sample posts, verified on every draft.</p>
+          <p className="page-subtitle">Your voice fingerprint - learned from your real posts, verified on every draft.</p>
+        </div>
+        <div style={{ display: "flex", gap: 10 }}>
+          {instagramAccount?.connected ? (
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ background: "linear-gradient(135deg, #e1306c, #833ab4)", border: "none" }}
+              onClick={handleSyncInstagram}
+              disabled={syncing}
+            >
+              {syncing ? "Syncing..." : "↻ Sync Live Instagram Posts"}
+            </button>
+          ) : (
+            <button
+              className="btn btn-primary btn-sm"
+              style={{ background: "linear-gradient(135deg, #e1306c, #833ab4)", border: "none" }}
+              onClick={onOpenInstagramModal}
+            >
+              Connect Instagram Account
+            </button>
+          )}
         </div>
       </div>
 
-      {/* Brand Profile */}
-      <div className="card glass animate-in" style={{ marginBottom: 24, borderColor: "var(--border-accent)" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div style={{
-            width: 56, height: 56, borderRadius: "var(--radius-lg)",
-            background: "var(--gradient-primary)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: "1.5rem", fontWeight: 800,
-          }}>
-            {(brand?.name || "F")[0]}
-          </div>
-          <div>
-            <h2>{brand?.name || "FitVibe"}</h2>
-            <div style={{ color: "var(--text-secondary)", fontSize: "0.8125rem" }}>
+      {/* Instagram Live Account Callout / Status */}
+      <div
+        className="card glass animate-in"
+        style={{
+          marginBottom: 24,
+          borderColor: instagramAccount?.connected ? "rgba(225, 48, 108, 0.4)" : "var(--border-accent)",
+          background: instagramAccount?.connected
+            ? "linear-gradient(135deg, rgba(225, 48, 108, 0.08), rgba(15, 23, 42, 0.6))"
+            : undefined,
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center", gap: 16, flexWrap: "wrap" }}>
+          {instagramAccount?.profile_picture_url || brand?.instagram_profile_pic ? (
+            <img
+              src={instagramAccount?.profile_picture_url || brand?.instagram_profile_pic}
+              alt="Profile"
+              style={{ width: 56, height: 56, borderRadius: "var(--radius-lg)", objectFit: "cover", border: "2px solid #e1306c" }}
+            />
+          ) : (
+            <div style={{
+              width: 56, height: 56, borderRadius: "var(--radius-lg)",
+              background: "var(--gradient-primary)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: "1.5rem", fontWeight: 800,
+            }}>
+              {(brand?.name || "F")[0]}
+            </div>
+          )}
+          <div style={{ flex: 1, minWidth: 200 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <h2 style={{ margin: 0 }}>{brand?.name || "FitVibe"}</h2>
+              {instagramAccount?.connected ? (
+                <span className="badge badge-success">Instagram Connected</span>
+              ) : (
+                <span className="badge badge-warning">Demo Mode</span>
+              )}
+            </div>
+            <div style={{ color: "var(--text-secondary)", fontSize: "0.8125rem", marginTop: 4 }}>
               {brand?.handle || "@fitvibe.wellness"} • {brand?.platform || "instagram"} • {brand?.post_count || 20} posts analyzed
+              {instagramAccount?.followers_count ? ` • ${instagramAccount.followers_count.toLocaleString()} followers` : ""}
             </div>
           </div>
-          <div style={{ marginLeft: "auto" }}>
-            <span className="badge badge-success">Voice Profile Active</span>
+          <div style={{ display: "flex", gap: 8 }}>
+            <button
+              className="btn btn-secondary btn-sm"
+              onClick={onOpenInstagramModal}
+            >
+              {instagramAccount?.connected ? "Manage Connection" : "Connect Real IG"}
+            </button>
+            {instagramAccount?.connected && (
+              <button
+                className="btn btn-primary btn-sm"
+                onClick={handleSyncInstagram}
+                disabled={syncing}
+              >
+                {syncing ? "Calibrating..." : "↻ Recalibrate Voice"}
+              </button>
+            )}
           </div>
         </div>
       </div>

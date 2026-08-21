@@ -10,6 +10,8 @@ import AnalyticsPage from "@/components/pages/AnalyticsPage";
 import BrandVoicePage from "@/components/pages/BrandVoicePage";
 import PipelineTracePage from "@/components/pages/PipelineTracePage";
 import ToastContainer from "@/components/ui/ToastContainer";
+import InstagramConnectModal from "@/components/ui/InstagramConnectModal";
+import { api } from "@/lib/api";
 
 export type PageId = "dashboard" | "content" | "comments" | "schedule" | "analytics" | "brand" | "pipeline";
 
@@ -24,6 +26,8 @@ export default function Home() {
   const [toasts, setToasts] = useState<Toast[]>([]);
   const [backendStatus, setBackendStatus] = useState<"connecting" | "connected" | "offline">("connecting");
   const [brandId, setBrandId] = useState<string>("demo-brand-001");
+  const [isIgModalOpen, setIsIgModalOpen] = useState(false);
+  const [instagramAccount, setInstagramAccount] = useState<any>(null);
 
   const addToast = useCallback((type: Toast["type"], message: string) => {
     const id = `${Date.now()}-${Math.random().toString(36).substr(2,5)}`; // ensure uniqueness
@@ -37,6 +41,16 @@ export default function Home() {
     setToasts(prev => prev.filter(t => t.id !== id));
   }, []);
 
+  // Fetch Instagram status
+  const refreshInstagramStatus = useCallback(async () => {
+    try {
+      const status = await api.getInstagramStatus(brandId);
+      setInstagramAccount(status);
+    } catch {
+      setInstagramAccount({ connected: false });
+    }
+  }, [brandId]);
+
   // Check backend status on mount
   useEffect(() => {
     const checkBackend = async () => {
@@ -44,6 +58,7 @@ export default function Home() {
         const res = await fetch("http://localhost:8000/health");
         if (res.ok) {
           setBackendStatus("connected");
+          refreshInstagramStatus();
         } else {
           setBackendStatus("offline");
         }
@@ -54,10 +69,17 @@ export default function Home() {
     checkBackend();
     const interval = setInterval(checkBackend, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [refreshInstagramStatus]);
 
   const renderPage = () => {
-    const props = { brandId, addToast, backendStatus };
+    const props = {
+      brandId,
+      addToast,
+      backendStatus,
+      onOpenInstagramModal: () => setIsIgModalOpen(true),
+      instagramAccount,
+      refreshInstagramStatus,
+    };
     switch (activePage) {
       case "dashboard": return <DashboardPage {...props} />;
       case "content": return <ContentStudioPage {...props} />;
@@ -76,11 +98,25 @@ export default function Home() {
         activePage={activePage}
         onNavigate={setActivePage}
         backendStatus={backendStatus}
+        onOpenInstagramModal={() => setIsIgModalOpen(true)}
+        instagramAccount={instagramAccount}
       />
       <main className="main-content">
         {renderPage()}
       </main>
       <ToastContainer toasts={toasts} onRemove={removeToast} />
+      <InstagramConnectModal
+        isOpen={isIgModalOpen}
+        onClose={() => {
+          setIsIgModalOpen(false);
+          refreshInstagramStatus();
+        }}
+        brandId={brandId}
+        onConnected={(acc) => {
+          refreshInstagramStatus();
+        }}
+        addToast={addToast}
+      />
     </div>
   );
 }

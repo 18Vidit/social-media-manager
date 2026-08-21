@@ -193,35 +193,56 @@ async def get_dashboard(brand_id: Optional[str] = None, db: AsyncSession = Depen
     Dashboard overview with engagement metrics, trend deltas, and agent status.
     This is the main landing page data source (§6.2).
     """
-    # Get mock account insights
+    # Fetch brand if exists
+    brand = None
+    if brand_id:
+        b_res = await db.execute(select(Brand).where(Brand.id == brand_id))
+        brand = b_res.scalar_one_or_none()
+    if not brand:
+        b_res = await db.execute(select(Brand).order_by(Brand.created_at.desc()).limit(1))
+        brand = b_res.scalar_one_or_none()
+
+    # Get account insights (use live Instagram account metadata if connected)
     account = MockPlatformAPI.get_account_insights()
+    if brand and brand.is_instagram_connected and brand.instagram_followers_count:
+        account["followers_count"] = brand.instagram_followers_count
+        account["username"] = brand.handle.replace("@", "") if brand.handle else "user"
+        account["name"] = brand.name
+        account["profile_picture_url"] = brand.instagram_profile_pic
     
     # Count items
-    posts_count_result = await db.execute(select(func.count(Post.id)))
+    posts_count_query = select(func.count(Post.id))
+    if brand:
+        posts_count_query = posts_count_query.where(Post.brand_id == brand.id)
+    posts_count_result = await db.execute(posts_count_query)
     total_posts = posts_count_result.scalar() or 0
     
-    drafts_pending_result = await db.execute(
-        select(func.count(GeneratedDraft.id)).where(GeneratedDraft.status == "pending")
-    )
+    drafts_pending_query = select(func.count(GeneratedDraft.id)).where(GeneratedDraft.status == "pending")
+    if brand:
+        drafts_pending_query = drafts_pending_query.where(GeneratedDraft.brand_id == brand.id)
+    drafts_pending_result = await db.execute(drafts_pending_query)
     pending_drafts = drafts_pending_result.scalar() or 0
     
-    scheduled_result = await db.execute(
-        select(func.count(ScheduledPost.id)).where(ScheduledPost.status == "scheduled")
-    )
+    scheduled_query = select(func.count(ScheduledPost.id)).where(ScheduledPost.status == "scheduled")
+    if brand:
+        scheduled_query = scheduled_query.where(ScheduledPost.brand_id == brand.id)
+    scheduled_result = await db.execute(scheduled_query)
     total_scheduled = scheduled_result.scalar() or 0
     
-    comments_pending = await db.execute(
-        select(func.count(Comment.id)).where(
-            Comment.triage_action.in_(["human_review", "escalate_immediate"]),
-            Comment.replied == False,
-        )
+    comments_pending_query = select(func.count(Comment.id)).where(
+        Comment.triage_action.in_(["human_review", "escalate_immediate"]),
+        Comment.replied == False,
     )
+    if brand:
+        comments_pending_query = comments_pending_query.where(Comment.brand_id == brand.id)
+    comments_pending = await db.execute(comments_pending_query)
     comments_pending_count = comments_pending.scalar() or 0
     
     # Compute average EQI
-    avg_eqi_result = await db.execute(
-        select(func.avg(Post.eqi_score)).where(Post.eqi_score != None)
-    )
+    avg_eqi_query = select(func.avg(Post.eqi_score)).where(Post.eqi_score != None)
+    if brand:
+        avg_eqi_query = avg_eqi_query.where(Post.brand_id == brand.id)
+    avg_eqi_result = await db.execute(avg_eqi_query)
     avg_eqi = avg_eqi_result.scalar() or 0
     
     # Trend deltas (mock but realistic)
@@ -246,6 +267,9 @@ async def get_dashboard(brand_id: Optional[str] = None, db: AsyncSession = Depen
             "follower_growth_pct": round(account["followers_delta_7d"] / max(account["followers_count"], 1) * 100, 2),
             "comments_pending_review": comments_pending_count,
             "circuit_breaker_active": cb_status["triggered"],
+            "is_instagram_connected": brand.is_instagram_connected if brand else False,
+            "instagram_handle": brand.handle if brand else None,
+            "instagram_profile_pic": brand.instagram_profile_pic if brand else None,
         },
         "account_insights": account,
         "trend_deltas": trend_deltas,
